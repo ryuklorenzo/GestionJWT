@@ -1,5 +1,6 @@
-package ies.sequeros.dam.pmdm.gestionperifl.ui.login
+package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 
+import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginCommand
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
