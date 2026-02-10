@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class LoginFormViewModel(
     //inyectar caso de uso
    // val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -62,18 +63,14 @@ class LoginFormViewModel(
                         email = state.value.email,
                         password = state.value.password
                     )
-
                 val result=loginUseCase(loginCommand).onSuccess{
                     //_state.value = _state.value.copy(isLoginSuccess = true)
                     _state.update { it.copy(isLoading = false, isLoginSuccess = true) }
-
                 }.onFailure {
                     _state.update { it.copy(isLoading = false, isLoginSuccess = false) }
                     //meter aqui el error
 
                 }
-o
-
 
             } catch (e: Exception) {
                 _state.update {

@@ -35,7 +35,9 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LoginScreen({},{})
+            LoginScreen(
+                {},
+                {})
         }
     }
 }
