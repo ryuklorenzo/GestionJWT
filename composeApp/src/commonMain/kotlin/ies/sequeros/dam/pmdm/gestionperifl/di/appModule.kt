@@ -6,6 +6,8 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginUseCase
+
 
 
 val appModulo = module {
@@ -31,7 +33,8 @@ val appModulo = module {
     capa de presentación
      **/
     single { AppSettings() }
+    single { LoginUseCase(get()) }
     viewModel { AppViewModel(get()) }
-    viewModel { LoginFormViewModel() }
+    viewModel { LoginFormViewModel(get()) }
 
 }

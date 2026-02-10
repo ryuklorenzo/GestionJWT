@@ -26,6 +26,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Preview
 fun App() {
     val appViewModel: AppViewModel = koinViewModel()
+    var currentScreen by remember { mutableStateOf("login") }
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
 
         Column(
@@ -35,7 +36,20 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LoginScreen({},{})
+            if (currentScreen == "login") {
+                LoginScreen(
+                    onLogin = {
+                        currentScreen = "home"
+                    },
+                    onCancel = {}
+                )
+            } else {
+                // PANTALLA DE INICIO
+                Text("¡Bienvenido al sistema!")
+                Button(onClick = { currentScreen = "login" }) {
+                    Text("Cerrar Sesión")
+                }
+            }
         }
     }
 }
