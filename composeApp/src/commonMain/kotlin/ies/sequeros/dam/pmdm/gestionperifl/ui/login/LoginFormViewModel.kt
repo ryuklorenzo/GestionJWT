@@ -56,7 +56,7 @@ class LoginFormViewModel(
                 _state.value = state.value.copy(isLoading = true)
                 //crear el comando, llamar al caso de uso
                 //que devuelve ok, o un error en el result
-                /*
+
                 val loginCommand =
                     LoginCommand(
                         email = state.value.email,
@@ -71,8 +71,8 @@ class LoginFormViewModel(
                     _state.update { it.copy(isLoading = false, isLoginSuccess = false) }
                     //meter aqui el error
 
-                }*/
-
+                }
+o
 
 
             } catch (e: Exception) {
