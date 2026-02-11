@@ -8,12 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
 
 import gestionjwt.composeapp.generated.resources.Res
@@ -21,15 +26,23 @@ import gestionjwt.composeapp.generated.resources.compose_multiplatform
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
 import org.koin.compose.viewmodel.koinViewModel
+import kotlinx.serialization.Serializable
+
+@Serializable
+object LoginRoute
+
+@Serializable
+object HomeRoute
 
 @Composable
 @Preview
 fun App() {
     val appViewModel: AppViewModel = koinViewModel()
+    val navController = rememberNavController()
+
     var currentScreen by remember { mutableStateOf("login") }
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
 
-    // cambiar por navhost  esto, para que en vez del if y el loggin tire a la siguiente pantalla
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -37,19 +50,33 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (currentScreen == "login") {
-                LoginScreen(
-                    onLogin = {
-                        print("DEBERIA DE CAMBIAR")
-                    //currentScreen = "home"
-                    },
-                    onCancel = {}
-                )
-            } else {
-                // PANTALLA DE INICIO
-                Text("¡Bienvenido al sistema!")
-                Button(onClick = { currentScreen = "login" }) {
-                    Text("Cerrar Sesión")
+            NavHost(
+                navController = navController,
+                startDestination = LoginRoute
+            ) {
+                composable<LoginRoute> {
+                    LoginScreen(
+                        onLogin = {
+                            navController.navigate(HomeRoute) {
+                                popUpTo(LoginRoute) {
+                                    inclusive = true
+                                }
+                            }
+                        },
+                        onCancel = {}
+                    )
+                }
+                composable<HomeRoute> {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("¡Bienvenido al sistema!")
+                        Button(onClick = {
+                            navController.navigate(LoginRoute) {
+                                popUpTo(HomeRoute) { inclusive = true }
+                            }
+                        }) {
+                            Text("Cerrar Sesión")
+                        }
+                    }
                 }
             }
         }
