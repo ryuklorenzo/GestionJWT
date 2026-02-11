@@ -3,7 +3,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import kotlinx.serialization.Serializable
 
-// Tus DTOs se mantienen aquí como pediste
+// Mantenemos las Data Class aquí para que UserRepositoryImpl las use
 @Serializable
 data class RegisterRequest(
     val username: String,
@@ -13,16 +13,18 @@ data class RegisterRequest(
 
 @Serializable
 data class RegisterResponse(
-    val id: Long, // Ajustado a Long si tu DB es autoincrement numérico, o String si es UUID
+    val id: String,
     val username: String,
     val email: String,
+    val password: String,
     val image: String? = null
 )
 
-// El caso de uso recibe el Repositorio, NO el HttpClient
+// CORREGIDO: Ahora recibe UserRepository, no HttpClient
 class RegisterUseCase(private val repository: UserRepository) {
 
-    suspend operator fun invoke(request: RegisterRequest): Result<RegisterResponse> {
-        return repository.register(request)
+    // Devuelve Boolean porque eso es lo que devuelve tu repositorio actual
+    suspend operator fun invoke(username: String, email: String, password: String): Boolean {
+        return repository.register(username, email, password)
     }
 }

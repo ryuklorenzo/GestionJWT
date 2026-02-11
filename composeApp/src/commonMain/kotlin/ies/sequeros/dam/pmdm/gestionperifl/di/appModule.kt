@@ -10,37 +10,33 @@ import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
-import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel // Ojo: Usa RegisterFormViewModel si es el que tiene la lógica
+import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModulo = module {
 
-    // 1. Infraestructura: Cliente HTTP (Configurado para Desktop)
+    // 1. Infraestructura
     single {
-        createHttpClient(
-            refreshUrl = "http://localhost:8080/api/public/refresh"
-        )
+        // Usa localhost para Desktop
+        createHttpClient("http://localhost:8080/api/public/refresh")
     }
 
-    // 2. Almacenamiento: TokenStorage (Faltaba esto)
+    // FALTABA ESTO: Almacenamiento
     single<TokenStorage> { SettingsTokenStorage() }
 
-    // 3. Repositorio: UserRepository (Faltaba esto)
-    // Koin inyectará automáticamente el HttpClient y el TokenStorage definidos arriba
+    // FALTABA ESTO: Repositorio
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
-
-    // 4. Capa de Aplicación (Casos de Uso)
+    // 2. Casos de Uso
     single { AppSettings() }
     single { LoginUseCase(get()) }
-    single { RegisterUseCase(get()) }
+    single { RegisterUseCase(get()) } // Ahora recibe UserRepository, no HttpClient
 
-    // 5. Capa de Presentación (ViewModels)
+    // 3. ViewModels
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get()) }
 
-    // Importante: Asegúrate de inyectar el ViewModel correcto.
-    // En tus archivos anteriores creamos 'RegisterFormViewModel'.
+    // CORREGIDO: Usamos RegisterFormViewModel (el que tiene la lógica), no la clase vacía
     viewModel { RegisterFormViewModel(get()) }
 }
