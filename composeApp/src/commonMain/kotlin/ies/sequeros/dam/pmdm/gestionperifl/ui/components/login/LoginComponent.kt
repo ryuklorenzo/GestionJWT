@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ fun LoginComponent (state: LoginState,
                     onEmailChange: (String) -> Unit,
                     onPasswordChange: (String) -> Unit,
                     onLoginClick: () -> Unit,
+                    onRegisterClick: () -> Unit,
                     onCancel: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -130,6 +132,11 @@ fun LoginComponent (state: LoginState,
                                 .fillMaxWidth()
                         )
                     }
+                }
+                // Botón de Registrarse añadido abajo
+                Spacer(modifier = Modifier.height(16.dp))
+                TextButton(onClick = onRegisterClick) {
+                    Text("¿No tienes cuenta? Regístrate aquí")
                 }
             }
         }

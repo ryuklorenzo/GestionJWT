@@ -11,6 +11,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginComponent
 @Composable
 fun LoginScreen(
     onLogin: () -> Unit,
+    onRegister: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val viewModel = koinViewModel<LoginFormViewModel>()
@@ -25,11 +26,15 @@ fun LoginScreen(
 
     LoginComponent(state,viewModel::onEmailChange,viewModel::onPasswordChange,
         {
-            print("DEBERIA DE CAMBIAR")
+            //print("DEBERIA DE CAMBIAR")
             viewModel.login()
-            onLogin()
+            //onLogin()
         },
         {
+            onRegister()
+        },
+        {
+            print("REGISTER")
             onCancel()
         })
 

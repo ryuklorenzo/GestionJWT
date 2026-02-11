@@ -20,12 +20,13 @@ class LoginFormViewModel(
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
     val isFormValid = MutableStateFlow(false)
+    val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
     fun onEmailChange(email: String) {
         _state.update {
             it.copy(
                 email = email,
-                emailError = if (email.contains("@")) null else "Email no válido"
+                emailError = if (emailPattern.matches(email))  null else "Email no válido"
             )
         }
         validateForm()
@@ -59,12 +60,12 @@ class LoginFormViewModel(
                 //crear el comando, llamar al caso de uso
                 //que devuelve ok, o un error en el result
 
-                val loginCommand =
-                    LoginCommand(
+                val loginState =
+                    ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState(
                         email = state.value.email,
                         password = state.value.password
                     )
-                val result=loginUseCase(loginCommand).onSuccess{
+                val result= loginUseCase(loginState).onSuccess{
                     //_state.value = _state.value.copy(isLoginSuccess = true)
                     _state.update { it.copy(isLoading = false, isLoginSuccess = true) }
                 }.onFailure {

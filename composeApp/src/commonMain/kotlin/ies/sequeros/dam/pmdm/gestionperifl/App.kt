@@ -25,6 +25,7 @@ import gestionjwt.composeapp.generated.resources.Res
 import gestionjwt.composeapp.generated.resources.compose_multiplatform
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.serialization.Serializable
 
@@ -33,6 +34,9 @@ object LoginRoute
 
 @Serializable
 object HomeRoute
+@Serializable
+object RegisterRoute
+
 
 @Composable
 @Preview
@@ -40,9 +44,7 @@ fun App() {
     val appViewModel: AppViewModel = koinViewModel()
     val navController = rememberNavController()
 
-    var currentScreen by remember { mutableStateOf("login") }
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
-
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -58,25 +60,34 @@ fun App() {
                     LoginScreen(
                         onLogin = {
                             navController.navigate(HomeRoute) {
-                                popUpTo(LoginRoute) {
-                                    inclusive = true
-                                }
+                                popUpTo(LoginRoute) { inclusive = true }
                             }
+                        },
+                        // 2. Pasamos la navegación al registro
+                        onRegister = {
+                            navController.navigate(RegisterRoute)
                         },
                         onCancel = {}
                     )
                 }
-                composable<HomeRoute> {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("¡Bienvenido al sistema!")
-                        Button(onClick = {
+
+                // 3. Pantalla de Registro
+                composable<RegisterRoute> {
+                    RegisterScreen(
+                        onRegisterSuccess = {
+                            // Al registrarse con éxito, vamos al Login o al Home
                             navController.navigate(LoginRoute) {
-                                popUpTo(HomeRoute) { inclusive = true }
+                                popUpTo(RegisterRoute) { inclusive = true }
                             }
-                        }) {
-                            Text("Cerrar Sesión")
+                        },
+                        onBack = {
+                            navController.popBackStack()
                         }
-                    }
+                    )
+                }
+
+                composable<HomeRoute> {
+                    // ... (código existente del Home)
                 }
             }
         }
