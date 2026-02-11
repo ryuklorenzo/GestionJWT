@@ -6,7 +6,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
 
 
 

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+
+  "type": "object",
+  "properties": {
+    "refresh_token": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$",
+      "description": "Debe ser un formato JWT válido (header.payload.signature)"
+    }
+  },
+  "required": ["refresh_token"],
+  "additionalProperties": false
+}
