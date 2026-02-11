@@ -2,12 +2,12 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.RegisterRequest
 import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.RegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterState
 
 class RegisterFormViewModel(
     private val registerUseCase: RegisterUseCase
@@ -15,7 +15,9 @@ class RegisterFormViewModel(
 
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
-    val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
+
+    // Regex simple para email
+    private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
     fun onNameChange(name: String) {
         _state.update { it.copy(name = name, nameError = null) }
@@ -29,41 +31,64 @@ class RegisterFormViewModel(
         _state.update { it.copy(password = password, passwordError = null) }
     }
 
-    fun register() {
+    // Renombrado a onSubmit para claridad
+    fun onSubmit() {
         val currentState = _state.value
 
-        // Validaciones básicas
-        if (currentState.name.isBlank() && currentState.name.length < 4) {
+        // 1. Validaciones
+        var hasError = false
+
+        if (currentState.name.isBlank()) {
             _state.update { it.copy(nameError = "El nombre no puede estar vacío") }
-            return
-        }
-        if (emailPattern.matches(currentState.email).not()) {
-            _state.update { it.copy(emailError = "Email inválido") }
-            return
-        }
-        if (currentState.password.length < 7) {
-            _state.update { it.copy(passwordError = "La contraseña debe tener al menos 4 caracteres") }
-            return
+            hasError = true
         }
 
+        if (!emailPattern.matches(currentState.email)) {
+            _state.update { it.copy(emailError = "Email inválido") }
+            hasError = true
+        }
+
+        if (currentState.password.length < 4) {
+            _state.update { it.copy(passwordError = "La contraseña debe tener al menos 4 caracteres") }
+            hasError = true
+        }
+
+        if (hasError) return
+
+        // 2. Llamada al Caso de Uso
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                // Asumimos que el UseCase lanza excepción si falla o devuelve un Result
-                // Llamamos al caso de uso. El ID lo generará el backend (UUID) y la imagen/estado serán null/default.
-                RegisterState(
-                    name = currentState.name,
+                // Creamos el Request DTO
+                val request = RegisterRequest(
+                    username = currentState.name,
                     email = currentState.email,
                     password = currentState.password
                 )
 
-                _state.update { it.copy(isLoading = false, isRegisterSuccess = true) }
+                // Llamamos al UseCase y obtenemos un Result
+                val result = registerUseCase(request)
+
+                result.onSuccess { response ->
+                    // Éxito: El usuario se guardó en BD y tenemos la respuesta
+                    println("Usuario registrado con ID: ${response.id}")
+                    _state.update { it.copy(isLoading = false, isRegisterSuccess = true) }
+                }.onFailure { error ->
+                    // Error: Falló la API
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = "Error: ${error.message}"
+                        )
+                    }
+                }
+
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Error al registrar: ${e.message ?: "Desconocido"}"
+                        errorMessage = "Error inesperado: ${e.message}"
                     )
                 }
             }
