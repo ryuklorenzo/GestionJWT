@@ -17,6 +17,7 @@ class RegisterFormViewModel(
 
     // Regex mejorada
     private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
+    private val passwordPattern = Regex("""^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$""")
 
     fun onNameChange(name: String) {
         _state.update { it.copy(name = name, nameError = null) }
@@ -35,15 +36,15 @@ class RegisterFormViewModel(
         var hasError = false
 
         // Validaciones
-        if (currentState.name.isBlank() || currentState.name.length < 4) {
-            _state.update { it.copy(nameError = "El nombre debe tener al menos 4 letras") }
+        if (currentState.name.isBlank() || currentState.name.length < 7) {
+            _state.update { it.copy(nameError = "El nombre debe tener al menos 8 letras") }
             hasError = true
         }
         if (!emailPattern.matches(currentState.email)) {
             _state.update { it.copy(emailError = "Email inválido") }
             hasError = true
         }
-        if (currentState.password.length < 4) {
+        if (!passwordPattern.matches(currentState.password)) {
             _state.update { it.copy(passwordError = "Mínimo 4 caracteres") }
             hasError = true
         }
