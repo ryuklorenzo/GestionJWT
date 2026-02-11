@@ -26,7 +26,6 @@ fun LoginScreen(
 
     LoginComponent(state,viewModel::onEmailChange,viewModel::onPasswordChange,
         {
-            //print("DEBERIA DE CAMBIAR")
             viewModel.login()
             //onLogin()
         },
@@ -34,7 +33,6 @@ fun LoginScreen(
             onRegister()
         },
         {
-            print("REGISTER")
             onCancel()
         })
 

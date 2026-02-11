@@ -24,6 +24,7 @@ import org.jetbrains.compose.resources.painterResource
 import gestionjwt.composeapp.generated.resources.Res
 import gestionjwt.composeapp.generated.resources.compose_multiplatform
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -67,7 +68,8 @@ fun App() {
                         onRegister = {
                             navController.navigate(RegisterRoute)
                         },
-                        onCancel = {}
+                        onCancel = {
+                        }
                     )
                 }
 

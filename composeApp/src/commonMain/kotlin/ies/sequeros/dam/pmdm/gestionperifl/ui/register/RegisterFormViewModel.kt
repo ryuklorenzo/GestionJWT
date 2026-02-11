@@ -15,6 +15,7 @@ class RegisterViewModel(
 
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
+    val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
     fun onNameChange(name: String) {
         _state.update { it.copy(name = name, nameError = null) }
@@ -32,15 +33,15 @@ class RegisterViewModel(
         val currentState = _state.value
 
         // Validaciones básicas
-        if (currentState.name.isBlank()) {
+        if (currentState.name.isBlank() && currentState.name.length < 4) {
             _state.update { it.copy(nameError = "El nombre no puede estar vacío") }
             return
         }
-        if (currentState.email.isBlank() || !currentState.email.contains("@")) {
+        if (emailPattern.matches(currentState.email).not()) {
             _state.update { it.copy(emailError = "Email inválido") }
             return
         }
-        if (currentState.password.length < 4) {
+        if (currentState.password.length < 7) {
             _state.update { it.copy(passwordError = "La contraseña debe tener al menos 4 caracteres") }
             return
         }
