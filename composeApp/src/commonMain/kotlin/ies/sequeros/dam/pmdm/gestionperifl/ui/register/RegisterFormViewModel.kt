@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterState
 
-class RegisterViewModel(
+class RegisterFormViewModel(
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
 

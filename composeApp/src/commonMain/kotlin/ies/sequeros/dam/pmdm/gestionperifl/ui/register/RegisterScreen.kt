@@ -20,9 +20,11 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onBack: () -> Unit
 ) {
-    val viewModel = koinViewModel<RegisterViewModel>()
+    // Inyectamos el RegisterFormViewModel
+    val viewModel = koinViewModel<RegisterFormViewModel>()
     val state by viewModel.state.collectAsState()
 
+    // Efecto: Si el registro es exitoso, navegamos
     LaunchedEffect(state.isRegisterSuccess) {
         if (state.isRegisterSuccess) {
             onRegisterSuccess()
@@ -32,7 +34,7 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Crear Cuenta") },
+                title = { Text("Registrarse") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -55,63 +57,68 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Nombre
+                // Campo Nombre
                 OutlinedTextField(
                     value = state.name,
-                    onValueChange = viewModel::onNameChange,
+                    onValueChange = { viewModel.onNameChange(it) },
                     label = { Text("Nombre de usuario") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = state.nameError != null,
                     supportingText = { state.nameError?.let { Text(it) } },
                     singleLine = true
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Email
+                // Campo Email
                 OutlinedTextField(
                     value = state.email,
-                    onValueChange = viewModel::onEmailChange,
-                    label = { Text("Email") },
+                    onValueChange = { viewModel.onEmailChange(it) },
+                    label = { Text("Correo electrónico") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = state.emailError != null,
                     supportingText = { state.emailError?.let { Text(it) } },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Password
+                // Campo Password
                 OutlinedTextField(
                     value = state.password,
-                    onValueChange = viewModel::onPasswordChange,
+                    onValueChange = { viewModel.onPasswordChange(it) },
                     label = { Text("Contraseña") },
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation(),
                     isError = state.passwordError != null,
                     supportingText = { state.passwordError?.let { Text(it) } },
                     singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
 
+                // Mensaje de error general (si falla el servidor)
                 if (state.errorMessage != null) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = state.errorMessage!!,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Botón de Registrarse
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
                     Button(
-                        onClick = viewModel::register,
+                        onClick = { viewModel.onSubmit() },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Registrarse")
+                        Text("Crear cuenta")
                     }
                 }
             }
