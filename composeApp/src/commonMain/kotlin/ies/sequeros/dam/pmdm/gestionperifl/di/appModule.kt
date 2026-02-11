@@ -10,46 +10,37 @@ import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
-import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel // Ojo: Usa RegisterFormViewModel si es el que tiene la lógica
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModulo = module {
 
-    // --- INFRAESTRUCTURA ---
-
-    // 1. Almacenamiento local (TokenStorage)
-    // Usamos SettingsTokenStorage que implementa la interfaz TokenStorage
-    single<TokenStorage> { SettingsTokenStorage() }
-
-    // 2. Cliente HTTP
-    // IMPORTANTE:
-    // - Si pruebas en Android Emulator usa: "http://10.0.2.2:8080/api/public/refresh"
-    // - Si pruebas en Desktop/Web usa: "http://localhost:8080/api/public/refresh"
+    // 1. Infraestructura: Cliente HTTP (Configurado para Desktop)
     single {
         createHttpClient(
-            refreshUrl = "http://localhost:8080/api/public/refresh" // Ajusta según tu entorno
+            refreshUrl = "http://localhost:8080/api/public/refresh"
         )
     }
 
-    // 3. Repositorios
-    // Inyectamos HttpClient (get()) y TokenStorage (get())
+    // 2. Almacenamiento: TokenStorage (Faltaba esto)
+    single<TokenStorage> { SettingsTokenStorage() }
+
+    // 3. Repositorio: UserRepository (Faltaba esto)
+    // Koin inyectará automáticamente el HttpClient y el TokenStorage definidos arriba
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
 
-    // --- CAPA DE APLICACIÓN (Casos de Uso) ---
-
+    // 4. Capa de Aplicación (Casos de Uso)
+    single { AppSettings() }
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
 
-
-    // --- CAPA DE PRESENTACIÓN (ViewModels y Estados globales) ---
-
-    single { AppSettings() } // Configuración de la app (Tema, idioma, etc.)
-
+    // 5. Capa de Presentación (ViewModels)
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get()) }
 
-    // Aquí inyectamos el ViewModel del registro pasando el caso de uso
+    // Importante: Asegúrate de inyectar el ViewModel correcto.
+    // En tus archivos anteriores creamos 'RegisterFormViewModel'.
     viewModel { RegisterFormViewModel(get()) }
 }
