@@ -15,6 +15,7 @@ class RegisterFormViewModel(
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
 
+    // Regex mejorada
     private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
     fun onNameChange(name: String) {
@@ -31,26 +32,29 @@ class RegisterFormViewModel(
 
     fun register() {
         val currentState = _state.value
+        var hasError = false
 
         // Validaciones
         if (currentState.name.isBlank() || currentState.name.length < 4) {
             _state.update { it.copy(nameError = "El nombre debe tener al menos 4 letras") }
-            return
+            hasError = true
         }
         if (!emailPattern.matches(currentState.email)) {
             _state.update { it.copy(emailError = "Email inválido") }
-            return
+            hasError = true
         }
         if (currentState.password.length < 4) {
             _state.update { it.copy(passwordError = "Mínimo 4 caracteres") }
-            return
+            hasError = true
         }
+
+        if (hasError) return
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                // CORREGIDO: Llamada REAL al servidor
+                // CORREGIDO: Llamada REAL al caso de uso
                 val success = registerUseCase(
                     username = currentState.name,
                     email = currentState.email,
@@ -63,7 +67,7 @@ class RegisterFormViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = "Error al registrar. Puede que el usuario ya exista."
+                            errorMessage = "Error al registrar. El usuario quizás ya existe."
                         )
                     }
                 }

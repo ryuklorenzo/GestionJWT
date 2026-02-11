@@ -57,7 +57,6 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Campo Nombre
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = { viewModel.onNameChange(it) },
@@ -70,7 +69,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Campo Email
                 OutlinedTextField(
                     value = state.email,
                     onValueChange = { viewModel.onEmailChange(it) },
@@ -84,7 +82,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Campo Password
                 OutlinedTextField(
                     value = state.password,
                     onValueChange = { viewModel.onPasswordChange(it) },
@@ -97,7 +94,6 @@ fun RegisterScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
 
-                // Mensaje de error general (si falla el servidor)
                 if (state.errorMessage != null) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -109,12 +105,11 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Botón de Registrarse
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
                     Button(
-                        onClick = { viewModel.onSubmit() },
+                        onClick = { viewModel.register() }, // CORREGIDO: Ahora llama a register()
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp)
                     ) {

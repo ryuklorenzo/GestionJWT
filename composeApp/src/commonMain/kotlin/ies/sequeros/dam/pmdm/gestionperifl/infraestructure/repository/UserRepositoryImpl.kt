@@ -18,11 +18,11 @@ class UserRepositoryImpl(
     private val tokenStorage: TokenStorage
 ) : UserRepository {
 
-    // CORREGIDO: Usamos localhost para Desktop
-    // Si vuelves a Android Emulator, cambia esto a "http://10.0.2.2:8080/api/public"
+    // CORREGIDO: localhost para Desktop
     private val baseUrl = "http://localhost:8080/api/public"
 
     override suspend fun login(email: String, password: String): Boolean {
+        // ... (igual que antes)
         return try {
             val response = client.post("$baseUrl/login") {
                 contentType(ContentType.Application.Json)

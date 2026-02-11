@@ -3,7 +3,6 @@ package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import kotlinx.serialization.Serializable
 
-// Mantenemos las Data Class aquí para que UserRepositoryImpl las use
 @Serializable
 data class RegisterRequest(
     val username: String,
@@ -20,10 +19,9 @@ data class RegisterResponse(
     val image: String? = null
 )
 
-// CORREGIDO: Ahora recibe UserRepository, no HttpClient
+// CORREGIDO: Recibe UserRepository
 class RegisterUseCase(private val repository: UserRepository) {
 
-    // Devuelve Boolean porque eso es lo que devuelve tu repositorio actual
     suspend operator fun invoke(username: String, email: String, password: String): Boolean {
         return repository.register(username, email, password)
     }

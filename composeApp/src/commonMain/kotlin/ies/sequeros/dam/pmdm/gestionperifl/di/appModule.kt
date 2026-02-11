@@ -18,25 +18,25 @@ val appModulo = module {
 
     // 1. Infraestructura
     single {
-        // Usa localhost para Desktop
+        // Usamos localhost para Desktop
         createHttpClient("http://localhost:8080/api/public/refresh")
     }
 
-    // FALTABA ESTO: Almacenamiento
+    // Storage
     single<TokenStorage> { SettingsTokenStorage() }
 
-    // FALTABA ESTO: Repositorio
+    // Repositorio
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     // 2. Casos de Uso
     single { AppSettings() }
     single { LoginUseCase(get()) }
-    single { RegisterUseCase(get()) } // Ahora recibe UserRepository, no HttpClient
+    single { RegisterUseCase(get()) }
 
     // 3. ViewModels
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get()) }
 
-    // CORREGIDO: Usamos RegisterFormViewModel (el que tiene la lógica), no la clase vacía
+    // CORREGIDO: Usamos RegisterFormViewModel
     viewModel { RegisterFormViewModel(get()) }
 }
