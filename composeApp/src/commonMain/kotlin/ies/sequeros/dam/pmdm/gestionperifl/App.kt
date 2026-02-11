@@ -29,6 +29,7 @@ fun App() {
     var currentScreen by remember { mutableStateOf("login") }
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
 
+    // cambiar por navhost  esto, para que en vez del if y el loggin tire a la siguiente pantalla
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -39,7 +40,8 @@ fun App() {
             if (currentScreen == "login") {
                 LoginScreen(
                     onLogin = {
-                        currentScreen = "home"
+                        print("DEBERIA DE CAMBIAR")
+                    //currentScreen = "home"
                     },
                     onCancel = {}
                 )
