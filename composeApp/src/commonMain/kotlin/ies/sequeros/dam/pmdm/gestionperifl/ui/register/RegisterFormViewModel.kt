@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterState
 
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase
@@ -50,8 +51,8 @@ class RegisterViewModel(
             try {
                 // Asumimos que el UseCase lanza excepción si falla o devuelve un Result
                 // Llamamos al caso de uso. El ID lo generará el backend (UUID) y la imagen/estado serán null/default.
-                RegisterUseCase(
-                    username = currentState.name,
+                RegisterState(
+                    name = currentState.name,
                     email = currentState.email,
                     password = currentState.password
                 )

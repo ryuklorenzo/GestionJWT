@@ -3,7 +3,6 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
-
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +60,7 @@ class LoginFormViewModel(
                 //que devuelve ok, o un error en el result
 
                 val loginState =
-                    ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState(
+                    LoginState(
                         email = state.value.email,
                         password = state.value.password
                     )
