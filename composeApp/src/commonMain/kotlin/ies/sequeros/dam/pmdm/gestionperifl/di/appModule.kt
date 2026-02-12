@@ -20,8 +20,7 @@ val appModulo = module {
         createHttpClient("http://localhost:8080/api/public/refresh")
     }
 
-    single<TokenStorage> { SettingsTokenStorage(get()) }
-
+    single { SettingsTokenStorage(get()) }
     single { SessionManager(get()) }
 
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
@@ -35,7 +34,7 @@ val appModulo = module {
     single { UpdateUserUseCase(get()) }
 
     viewModel { AppViewModel(get()) }
-    viewModel { LoginFormViewModel(get()) }
+    viewModel { LoginFormViewModel(get(), get()) }
 
     viewModel { RegisterFormViewModel(get()) }
 }

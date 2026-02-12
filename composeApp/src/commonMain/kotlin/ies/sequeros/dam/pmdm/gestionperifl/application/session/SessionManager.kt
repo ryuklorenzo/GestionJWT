@@ -1,38 +1,31 @@
 package ies.sequeros.dam.pmdm.gestionperifl.application.session
 
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.set
-import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginResponse
+import ies.sequeros.dam.pmdm.gestionperifl.domain.model.AuthTokens
+import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.SettingsTokenStorage
 
-class SessionManager(private val settings: Settings) {
+class SessionManager(private val tokenStorage: SettingsTokenStorage) {
 
-    companion object {
-        private const val KEY_ACCESS_TOKEN = "access_token"
-        private const val KEY_REFRESH_TOKEN = "refresh_token"
-        private const val KEY_USER_ID = "id_token"
+    fun saveSession(responseTokens: AuthTokens) {
+        tokenStorage.saveAllTokens(responseTokens)
     }
 
-    fun saveSession(response: LoginResponse) {
-        settings.putString(KEY_ACCESS_TOKEN, response.access_token)
-        settings.putString(KEY_USER_ID, response.id_token)
-        response.refresh_token?.let {
-            settings.putString(KEY_REFRESH_TOKEN, it)
-        }
+    fun saveSession(accessToken: String, idToken: String, refreshToken: String?) {
+        val tokens = AuthTokens(accessToken, idToken, refreshToken)
+        tokenStorage.saveAllTokens(tokens)
     }
 
-    fun getAccessToken(): String? = settings.getStringOrNull(KEY_ACCESS_TOKEN) //[cite: 150]
+    fun getAccessToken(): String? = tokenStorage.getAccessToken()
 
-    fun getRefreshToken(): String? = settings.getStringOrNull(KEY_REFRESH_TOKEN) //[cite: 150]
+    fun getRefreshToken(): String? = tokenStorage.getRefreshToken()
 
-    fun isLoggedIn(): Boolean = getAccessToken() != null
+    fun getIdToken(): String? = tokenStorage.getIdToken()
 
-    fun loguot() {
-        settings.remove(KEY_ACCESS_TOKEN)
-        settings.remove(KEY_REFRESH_TOKEN)
-        settings.remove(KEY_USER_ID)
+    fun isLoggedIn(): Boolean {
+        //loggeado si hay token
+        return tokenStorage.getAccessToken() != null && tokenStorage.getIdToken() != null
     }
+
     fun clearSession(){
-        settings.clear()
+        tokenStorage.clear()
     }
-
 }

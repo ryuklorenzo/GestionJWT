@@ -28,7 +28,7 @@ class LoginUseCase(private val client: HttpClient) {
 
     suspend operator fun invoke(state: LoginState): Result<LoginResponse> {
         return try {
-            // Convertimos el estado de la UI al objeto que espera la API (LoginRequest)
+            //convertimos el estado de la UI al objeto LoginRequest
             val request = LoginRequest(
                 email = state.email,
                 password = state.password
@@ -39,19 +39,19 @@ class LoginUseCase(private val client: HttpClient) {
                 setBody(request)
             }
 
-            // Verificamos el código de estado
+            //verificamos el satuscode
             if (response.status.isSuccess()) {
-                // 200 OK -> Login correcto
+                // 200 OK
                 Result.success(response.body<LoginResponse>())
             } else if (response.status.value == 401) {
-                // 401 Unauthorized -> Credenciales malas
+                // 401 credenciales mal
                 Result.failure(Exception("Credenciales incorrectas"))
             } else {
-                // Otros errores (500, 404, etc)
+                // Otros errores
                 Result.failure(Exception("Error del servidor: ${response.status.value}"))
             }
         } catch (e: Exception) {
-            // Error de conexión, timeout, etc.
+            //timeout o cosas raras
             Result.failure(e)
         }
     }
