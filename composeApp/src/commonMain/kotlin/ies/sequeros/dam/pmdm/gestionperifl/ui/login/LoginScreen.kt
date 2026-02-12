@@ -16,7 +16,6 @@ fun LoginScreen(
     val viewModel = koinViewModel<LoginFormViewModel>()
     val state by viewModel.state.collectAsState()
 
-    // Este efecto reacciona cuando el ViewModel pone isLoginSuccess en true
     LaunchedEffect(state.isLoginSuccess) {
         if (state.isLoginSuccess) {
             onLogin()

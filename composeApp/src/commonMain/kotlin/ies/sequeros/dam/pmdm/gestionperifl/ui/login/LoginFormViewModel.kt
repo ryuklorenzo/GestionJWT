@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginFormViewModel(
-    //inyectar caso de uso
-   // val loginUseCase: LoginUseCase
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
@@ -51,8 +49,8 @@ class LoginFormViewModel(
     }
 
     fun login() {
-        _state.update { it.copy(isLoginSuccess = true) }
-        /*
+        //para navegar sin comprobar    _state.update { it.copy(isLoginSuccess = true) }
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
@@ -85,6 +83,6 @@ class LoginFormViewModel(
             } finally {
                 _state.value = _state.value.copy(isLoading = false)
             }
-        }*/
+        }
     }
 }

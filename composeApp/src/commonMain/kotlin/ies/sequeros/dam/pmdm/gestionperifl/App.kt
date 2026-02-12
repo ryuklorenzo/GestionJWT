@@ -79,7 +79,6 @@ fun App() {
                 }
 
                 composable<HomeRoute> {
-                    // Aquí cargamos la nueva pantalla con menú lateral
                     HomeScreen(
                         onLogout = {
                             navController.navigate(LoginRoute) {

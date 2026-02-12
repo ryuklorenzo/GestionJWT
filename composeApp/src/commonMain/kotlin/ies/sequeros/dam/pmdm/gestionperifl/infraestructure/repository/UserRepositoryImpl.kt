@@ -18,7 +18,6 @@ class UserRepositoryImpl(
     private val tokenStorage: TokenStorage
 ) : UserRepository {
 
-    // CORREGIDO: localhost para Desktop
     private val baseUrl = "http://localhost:8080/api/public"
 
     override suspend fun login(email: String, password: String): Boolean {
