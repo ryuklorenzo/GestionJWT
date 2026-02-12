@@ -1,7 +1,7 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
-import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
-import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
+import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.*
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor.createHttpClient
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repository.UserRepositoryImpl
@@ -16,27 +16,26 @@ import org.koin.dsl.module
 
 val appModulo = module {
 
-    // 1. Infraestructura
     single {
-        // Usamos localhost para Desktop
         createHttpClient("http://localhost:8080/api/public/refresh")
     }
 
-    // Storage
-    single<TokenStorage> { SettingsTokenStorage(get ()) }
+    single<TokenStorage> { SettingsTokenStorage(get()) }
 
-    // Repositorio
+    single { SessionManager(get()) }
+
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
-    // 2. Casos de Uso
     single { AppSettings() }
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
+    single { ChangePasswordUseCase(get()) }
+    single { GetProfileUseCase(get()) }
+    single { LogoutUseCase(get(), get()) }
+    single { UpdateUserUseCase(get()) }
 
-    // 3. ViewModels
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get()) }
 
-    // CORREGIDO: Usamos RegisterFormViewModel
     viewModel { RegisterFormViewModel(get()) }
 }
