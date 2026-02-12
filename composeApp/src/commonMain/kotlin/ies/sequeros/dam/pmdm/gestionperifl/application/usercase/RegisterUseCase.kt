@@ -1,17 +1,12 @@
 package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegisterCommand(
-    val email: String,
+data class RegisterRequest(
     val username: String,
+    val email: String,
     val password: String
 )
 
@@ -20,24 +15,14 @@ data class RegisterResponse(
     val id: String,
     val username: String,
     val email: String,
+    val password: String,
     val image: String? = null
 )
-class RegisterUseCase(private val client: HttpClient) {
-    suspend operator fun invoke(command: RegisterCommand): Result<RegisterResponse> {
-        return try
-        {
-            val response = client.post("http://localhost:8080/api/public/register") {
-                contentType(ContentType.Application.Json)
-                setBody(command)
-            }
-            if (response.status.value in 200..299) {
-                Result.success(response.body<RegisterResponse>())
-            } else {
-                Result.failure(Exception("Error ${response.status.value}"))
-            }
-        } catch (e: Exception)
-        {
-            Result.failure(e)
-        }
+
+// CORREGIDO: Recibe UserRepository
+class RegisterUseCase(private val repository: UserRepository) {
+
+    suspend operator fun invoke(username: String, email: String, password: String): Boolean {
+        return repository.register(username, email, password)
     }
 }
