@@ -109,7 +109,7 @@ fun RegisterScreen(
                     CircularProgressIndicator()
                 } else {
                     Button(
-                        onClick = { viewModel.register() }, // CORREGIDO: Ahora llama a register()
+                        onClick = { viewModel.register() },  
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp)
                     ) {

@@ -26,6 +26,7 @@ import gestionjwt.composeapp.generated.resources.compose_multiplatform
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.principal.MainScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.serialization.Serializable
@@ -61,10 +62,9 @@ fun App() {
                     LoginScreen(
                         onLogin = {
                             navController.navigate(HomeRoute) {
-                                popUpTo(LoginRoute) { inclusive = true }
+                                popUpTo(HomeRoute) { inclusive = true }
                             }
                         },
-                        // 2. Pasamos la navegación al registro
                         onRegister = {
                             navController.navigate(RegisterRoute)
                         },
@@ -73,11 +73,9 @@ fun App() {
                     )
                 }
 
-                // 3. Pantalla de Registro
                 composable<RegisterRoute> {
                     RegisterScreen(
                         onRegisterSuccess = {
-                            // Al registrarse con éxito, vamos al Login o al Home
                             navController.navigate(LoginRoute) {
                                 popUpTo(RegisterRoute) { inclusive = true }
                             }
@@ -89,7 +87,7 @@ fun App() {
                 }
 
                 composable<HomeRoute> {
-                    // ... (código existente del Home)
+                    MainScreen()
                 }
             }
         }
