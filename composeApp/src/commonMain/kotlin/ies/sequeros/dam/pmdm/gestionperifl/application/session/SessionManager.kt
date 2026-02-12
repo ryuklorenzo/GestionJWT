@@ -31,5 +31,8 @@ class SessionManager(private val settings: Settings) {
         settings.remove(KEY_REFRESH_TOKEN)
         settings.remove(KEY_USER_ID)
     }
+    fun clearSession(){
+        settings.clear()
+    }
 
 }

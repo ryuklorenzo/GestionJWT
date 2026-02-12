@@ -23,7 +23,7 @@ val appModulo = module {
     }
 
     // Storage
-    single<TokenStorage> { SettingsTokenStorage() }
+    single<TokenStorage> { SettingsTokenStorage(get ()) }
 
     // Repositorio
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
