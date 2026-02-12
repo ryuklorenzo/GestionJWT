@@ -1,5 +1,6 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui
 
+import ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -18,6 +19,9 @@ import androidx.navigation.compose.rememberNavController
 import ies.sequeros.dam.pmdm.gestionperifl.ProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.EditProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.PasswordRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
+
 //import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileScreen
 //import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
 //import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
@@ -86,13 +90,13 @@ fun HomeScreen(onLogout: () -> Unit) {
                     startDestination = ProfileRoute
                 ) {
                     composable<ProfileRoute> {
-                        //ProfileScreen()
+                        ProfileScreen()
                     }
                     composable<EditProfileRoute> {
-                        //EditProfileScreen()
+                        EditProfileScreen()
                     }
                     composable<PasswordRoute> {
-                        //ChangePasswordScreen()
+                        ChangePasswordScreen()
                     }
                 }
             }

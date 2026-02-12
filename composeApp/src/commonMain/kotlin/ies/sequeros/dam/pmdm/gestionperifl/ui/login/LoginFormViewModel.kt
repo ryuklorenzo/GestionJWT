@@ -51,6 +51,8 @@ class LoginFormViewModel(
     }
 
     fun login() {
+        _state.update { it.copy(isLoginSuccess = true) }
+        /*
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
@@ -65,7 +67,7 @@ class LoginFormViewModel(
                         password = state.value.password
                     )
                 val result= loginUseCase(loginState).onSuccess{
-                    //_state.value = _state.value.copy(isLoginSuccess = true)
+                    _state.value = _state.value.copy(isLoginSuccess = true)
                     _state.update { it.copy(isLoading = false, isLoginSuccess = true) }
                 }.onFailure {
                     _state.update { it.copy(isLoading = false, isLoginSuccess = false) }
@@ -83,6 +85,6 @@ class LoginFormViewModel(
             } finally {
                 _state.value = _state.value.copy(isLoading = false)
             }
-        }
+        }*/
     }
 }

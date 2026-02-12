@@ -3,7 +3,6 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.login
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.LaunchedEffect
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginComponent
@@ -15,26 +14,27 @@ fun LoginScreen(
     onCancel: () -> Unit,
 ) {
     val viewModel = koinViewModel<LoginFormViewModel>()
-    //estado del formulario que es el del LoginComponent
     val state by viewModel.state.collectAsState()
-    //cuando el estado pasa a ser correcto, se avisa al padre
+
+    // Este efecto reacciona cuando el ViewModel pone isLoginSuccess en true
     LaunchedEffect(state.isLoginSuccess) {
         if (state.isLoginSuccess) {
             onLogin()
         }
     }
 
-    LoginComponent(state,viewModel::onEmailChange,viewModel::onPasswordChange,
-        {
+    LoginComponent(
+        state = state,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onLoginClick = {
             viewModel.login()
-            //onLogin()
         },
-        {
+        onRegisterClick = {
             onRegister()
         },
-        {
+        onCancel = {
             onCancel()
-        })
-
-
+        }
+    )
 }
