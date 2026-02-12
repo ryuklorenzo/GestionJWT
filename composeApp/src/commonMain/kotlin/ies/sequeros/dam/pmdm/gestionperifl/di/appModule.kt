@@ -1,7 +1,7 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
-import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
-import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
+import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.*
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor.createHttpClient
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repository.UserRepositoryImpl
@@ -22,11 +22,17 @@ val appModulo = module {
 
     single<TokenStorage> { SettingsTokenStorage() }
 
+    single { SessionManager(get()) }
+
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
 
     single { AppSettings() }
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
+    single { ChangePasswordUseCase(get()) }
+    single { GetProfileUseCase(get()) }
+    single { LogoutUseCase(get(), get()) }
+    single { UpdateUserUseCase(get()) }
 
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get()) }
