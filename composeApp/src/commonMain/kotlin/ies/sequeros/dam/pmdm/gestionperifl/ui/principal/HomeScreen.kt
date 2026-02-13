@@ -148,6 +148,7 @@ fun HomeScreen(onLogout: () -> Unit) {
                         ChangeImageScreen(
                             viewModel = changeimageviewmodel,
                             userId = userId as String,
+                            currentImageUrl = profileviewmodel.state.value.image,
                             onImageChanged = {
                                 onLogout()
                             }

@@ -27,7 +27,6 @@ class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : V
                 errorMessage = null
             )
         }
-        validateForm()
     }
 
     fun onEmailChange(email: String) {
@@ -38,18 +37,8 @@ class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : V
                 errorMessage = null
             )
         }
-        validateForm()
     }
 
-    private fun validateForm() {
-        val s = _state.value
-        val isValidCheck = s.username.isNotBlank() &&
-                s.email.isNotBlank() &&
-                s.usernameError == null &&
-                s.emailError == null
-
-        _state.value = _state.value.copy(isValid = isValidCheck)
-    }
 
     fun updateProfile() {
         val s = _state.value
