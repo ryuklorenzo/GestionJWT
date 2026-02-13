@@ -35,6 +35,9 @@ object ProfileRoute
 object EditProfileRoute
 @Serializable
 object PasswordRoute
+@Serializable
+object ImageRoute
+
 
 @Composable
 fun App() {

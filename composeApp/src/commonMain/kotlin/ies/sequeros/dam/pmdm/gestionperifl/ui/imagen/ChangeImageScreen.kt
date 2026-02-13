@@ -1,3 +1,5 @@
+package ies.sequeros.dam.pmdm.gestionperifl.ui.imagen
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -9,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProfileScreen() {
+fun ChangeImageScreen(){
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Pantalla de Perfil", style = MaterialTheme.typography.titleLarge)
-        // Aquí iría tu componente de visualización de perfil
+        Text("Cambiar Imagen de Usuario", style = MaterialTheme.typography.titleLarge)
+        // Aquí iría tu formulario de edición
         Spacer(Modifier.height(40.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("PUES AQUI IRIA EL PERFIL CHACHO")
+        Column {
+            Text("VEGETTA MINIATURA MINIATURA")
         }
     }
-
 }
