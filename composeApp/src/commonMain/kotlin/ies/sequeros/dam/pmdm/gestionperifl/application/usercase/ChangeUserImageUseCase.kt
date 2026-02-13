@@ -10,7 +10,7 @@ class ChangeUserImageUseCase(
 
     suspend operator fun invoke(userId: String, imageUrl: String): Result<Unit> {
         return try {
-            val response = client.put(
+            val response = client.patch(
                 "http://localhost:8080/api/users/$userId/image"
             ) {
                 setBody(imageUrl)
