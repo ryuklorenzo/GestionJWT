@@ -57,7 +57,8 @@ class ChangePasswordViewModel(
             val result = changePasswordUseCase(s.oldPassword, s.newPassword)
 
             result.onSuccess {
-                _state.update { it.copy(isLoading = false, isSuccess = true) }
+                _state.value = _state.value.copy(isLoading = false, isSuccess = true)
+
             }.onFailure { error ->
                 _state.update {
                     it.copy(
