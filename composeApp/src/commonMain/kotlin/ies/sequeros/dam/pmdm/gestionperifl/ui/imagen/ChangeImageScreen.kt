@@ -1,72 +1,48 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.imagen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.ImagePickerPreviewComponent
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readBytes
 
 @Composable
 fun ChangeImageScreen(
     viewModel: ChangeImageViewModel,
     userId: String,
+    currentImageUrl: String?,
     onImageChanged: () -> Unit
-){
+) {
     val state by viewModel.state.collectAsState()
 
-    var imageUrl by remember { mutableStateOf("") }
-
-    LaunchedEffect(state.isSuccess) {
-        if (state.isSuccess) {
-            onImageChanged()
-        }
-    }
+    var selectedFile by remember { mutableStateOf<PlatformFile?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(16.dp)
     ) {
-        Text(
-            text = "Cambiar imagen",
-            style = MaterialTheme.typography.titleLarge
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = imageUrl,
-            onValueChange = { imageUrl = it },
-            label = { Text(text = "Image url") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(onClick = {
-            viewModel.changeImage(userId, imageUrl)
-        },
-            enabled = !state.isLoading && imageUrl.isNotBlank()
-        ) {
-
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                )
-            } else {
-                Text("Guardar")
+        ImagePickerPreviewComponent(
+            imageUrl = currentImageUrl,
+            selectedFile = selectedFile,
+            onFileSelected = { file ->
+                selectedFile = file
+            },
+            onConfirm = {
+                selectedFile?.let { file ->
+                    val bytes = file.readBytes()
+                    viewModel.changeImage(userId, bytes)
+                }
             }
+        )
 
+        LaunchedEffect(state.isSuccess) {
+            if (state.isSuccess) {
+                onImageChanged()
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (state.errorMessage != null) {
-            Text(text = state.errorMessage!!, color = MaterialTheme.colorScheme.error)
-        }
-
     }
 }
