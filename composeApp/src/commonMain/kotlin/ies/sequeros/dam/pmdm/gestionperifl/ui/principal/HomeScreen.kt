@@ -134,7 +134,7 @@ fun HomeScreen(onLogout: () -> Unit) {
                             viewModel { editprofileviewmodel },
                             onProfileUpdate = {
                                 profileviewmodel.loadProfile()
-                                subNavController.popBackStack()
+                                subNavController.navigate(ProfileRoute)
                             }
                         )
                     }
@@ -150,7 +150,7 @@ fun HomeScreen(onLogout: () -> Unit) {
                             userId = userId as String,
                             currentImageUrl = profileviewmodel.state.value.image,
                             onImageChanged = {
-                                onLogout()
+                                profileviewmodel.loadProfile()
                             }
                         )
                     }
