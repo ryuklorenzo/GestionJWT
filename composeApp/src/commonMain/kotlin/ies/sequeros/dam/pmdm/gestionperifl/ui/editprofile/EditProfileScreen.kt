@@ -1,12 +1,12 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun EditProfileScreen(
@@ -22,51 +22,66 @@ fun EditProfileScreen(
         }
     }
 
+
     Column(
         modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text("Editar Datos de Usuario", style = MaterialTheme.typography.titleLarge)
+
+        Text(
+            text = "Editar Datos de Usuario",
+            style = MaterialTheme.typography.titleLarge
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = state.username,
-            onValueChange = {viewModel.onUsernameChange(it)},
+            onValueChange = viewModel::onUsernameChange,
             label = { Text("Nombre de usuario") },
             modifier = Modifier.fillMaxWidth(),
             isError = state.usernameError != null
         )
-        state.usernameError?.let {
-            Text(it, color = MaterialTheme.colorScheme.error)
+
+        state.usernameError?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = state.email,
-            onValueChange = { viewModel.onEmailChange(it) },
+            onValueChange = viewModel::onEmailChange,
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             isError = state.emailError != null
         )
-        state.emailError?.let {
-            Text(it, color = MaterialTheme.colorScheme.error)
+
+        state.emailError?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.updateProfile() },
+            onClick = viewModel::updateProfile,
             modifier = Modifier.fillMaxWidth(),
             enabled = state.isValid && !state.isLoading
         ) {
+
             if (state.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -76,10 +91,11 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (state.errorMessage != null) {
-            Text(state.errorMessage, color = MaterialTheme.colorScheme.error)
+        state.errorMessage?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error
+            )
         }
-
     }
-
 }
