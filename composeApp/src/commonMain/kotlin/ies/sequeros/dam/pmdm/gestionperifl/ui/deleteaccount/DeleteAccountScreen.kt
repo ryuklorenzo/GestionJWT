@@ -1,21 +1,28 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 
 @Composable
 fun DeleteAccountScreen(
     viewModel: DeleteAccountViewModel,
-    userId: String,
+    userId: String, // Este parámetro ya no es crítico para la llamada, pero lo mantenemos si lo usas para mostrar info
     onAccountDelete: () -> Unit
 ) {
-    val state by viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsState().value
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
+    // Observar si el borrado fue exitoso
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) {
             onAccountDelete()
@@ -23,52 +30,66 @@ fun DeleteAccountScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Text(
-            text = "Eliminar cuenta",
-            style = MaterialTheme.typography.titleLarge,
+            text = "¿Eliminar cuenta?",
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.error
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "¿Seguro? Esta acción es irreversible.",
-            color = MaterialTheme.colorScheme.error
+            text = "Esta acción es irreversible. Por seguridad, introduce tu contraseña actual para confirmar.",
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = { viewModel.deleteAccount(userId) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
-            ),
-            enabled = !state.isLoading
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.onError,
-                    modifier = Modifier.size(24.dp)
-                )
-            } else {
-                Text("Eliminar cuenta")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
+        // --- CAMPO PARA LA CONTRASEÑA ---
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Contraseña actual") },
+            singleLine = true,
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = null)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        // --------------------------------
 
         if (state.errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = state.errorMessage!!,
+                text = "Error: ${state.errorMessage}",
                 color = MaterialTheme.colorScheme.error
             )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Button(
+                onClick = {
+                    // AQUÍ ESTÁ EL CAMBIO: Enviamos lo que el usuario escribió, no el userId
+                    viewModel.deleteAccount(password)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                enabled = password.isNotEmpty(), // Desactivar si está vacío
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Confirmar eliminación")
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ class TokenService(
     private val secret: String,
     private val issuer: String,
     private val imageBaseUrl: String,
-    private val accessTokenExpiresInMiliSecons: Long=3600 * 1000/60, //1 Hora
+    private val accessTokenExpiresInMiliSecons: Long=3600 * 1000, //1 Hora
     private val refreshTokenExpiresMiliSecons: Long=15L * 24 * 60 * 60 * 1000 // 15 días en milisegundos
 ) : ITokenService {
 

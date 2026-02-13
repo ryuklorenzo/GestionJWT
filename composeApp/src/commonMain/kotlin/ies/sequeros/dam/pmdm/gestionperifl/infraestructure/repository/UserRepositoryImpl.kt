@@ -9,6 +9,7 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -65,7 +66,6 @@ class UserRepositoryImpl(
         }
     }
 
-    // --- CORRECCIÓN PRINCIPAL PARA ELIMINAR CUENTA ---
     override suspend fun deleteAccount(password: String): Boolean {
         return try {
             // 1. Obtener el token
@@ -108,16 +108,24 @@ class UserRepositoryImpl(
             Result.failure(e)
         }
     }
-
     override suspend fun changePassword(oldPass: String, newPass: String): Boolean {
         return try {
-            return true // por poner algo antes de que de error
-            //cambiar luego
+            val token = tokenStorage.getAccessToken()
+            if (token.isNullOrBlank()) {
+                println("UserRepositoryImpl: No hay token disponible para actualizar la contraseña.")
+                return false
+            }
+            val response = client.put("http://localhost:8080/api/users/me/password") {
+                contentType(ContentType.Application.Json)
+                bearerAuth(token)
+                setBody(ChangePasswordCommand(oldPassword = oldPass, newPassword = newPass))
+            }
+            println("UserRepositoryImpl: Delete status code = ${response.status}")
+            response.status == HttpStatusCode.NoContent || response.status == HttpStatusCode.OK
         }
         catch (e: Exception) {
             e.printStackTrace()
             false
         }
     }
-
 }
