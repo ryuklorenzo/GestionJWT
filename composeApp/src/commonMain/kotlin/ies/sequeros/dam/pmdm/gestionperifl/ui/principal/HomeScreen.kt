@@ -1,8 +1,9 @@
-package ies.sequeros.dam.pmdm.gestionperifl.ui
+package ies.sequeros.dam.pmdm.gestionperifl.ui.principal
 
 import ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Image
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,14 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ies.sequeros.dam.pmdm.gestionperifl.DeleteRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.EditProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ImageRoute
 import ies.sequeros.dam.pmdm.gestionperifl.PasswordRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.imagen.ChangeImageScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
+// Nuevos imports necesarios para la lógica del ID de usuario
+import org.koin.compose.koinInject
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
+import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenJwt
 
 data class MenuOption(
     val icon: ImageVector,
@@ -35,6 +46,20 @@ data class MenuOption(
 @Composable
 fun HomeScreen(onLogout: () -> Unit) {
     val subNavController = rememberNavController()
+
+    val changepasswordviewmodel : ChangePasswordViewModel = koinViewModel()
+    val deleteacountviewmodel : DeleteAccountViewModel = koinViewModel()
+
+    val sessionManager: SessionManager = koinInject()
+    val userId = remember {
+        try {
+            sessionManager.getAccessToken()?.let { token ->
+                TokenJwt(token).payload.userId
+            } ?: ""
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     val options = listOf(
         MenuOption(Icons.Default.Person, "Ver Perfil") {
@@ -47,7 +72,10 @@ fun HomeScreen(onLogout: () -> Unit) {
             subNavController.navigate(PasswordRoute) { launchSingleTop = true }
         },
         MenuOption(Icons.Default.Image, "Cambiar Imagen"){
-            subNavController.navigate(ImageRoute) { launchSingleTop = true } // cambiar ruta por imagen
+            subNavController.navigate(ImageRoute) { launchSingleTop = true }
+        },
+        MenuOption(Icons.Default.Delete, "Eliminar Cuenta"){
+            subNavController.navigate(DeleteRoute)
         },
         MenuOption(Icons.Default.ExitToApp, "Cerrar Sesión") {
             onLogout()
@@ -96,10 +124,21 @@ fun HomeScreen(onLogout: () -> Unit) {
                         EditProfileScreen()
                     }
                     composable<PasswordRoute> {
-                        ChangePasswordScreen()
+                        ChangePasswordScreen(
+                            changepasswordviewmodel
+                        )
                     }
                     composable<ImageRoute> {
                         ChangeImageScreen()
+                    }
+                    composable<DeleteRoute>{
+                        DeleteAccountScreen(
+                            viewModel = deleteacountviewmodel,
+                            userId = userId as String,
+                            onAccountDelete = {
+                                onLogout()
+                            }
+                        )
                     }
                 }
             }
