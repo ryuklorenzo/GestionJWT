@@ -14,4 +14,3 @@ Luego ya iniciar app:
 
 
 cuando cambio de contraseña cerrar sesion
-un pluggin de refresh token

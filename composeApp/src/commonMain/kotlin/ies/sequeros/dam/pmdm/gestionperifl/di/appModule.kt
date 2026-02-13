@@ -44,6 +44,7 @@ val appModulo = module {
     single { UpdateUserUseCase(get()) }
     single { DeleteUserUseCase(get()) }
     single { ChangePasswordUseCase(get()) }
+    single { ChangeUserImageUseCase(get()) }
 
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get(), get()) }
@@ -54,5 +55,7 @@ val appModulo = module {
     viewModel { RegisterFormViewModel(get()) }
     viewModel { ChangePasswordViewModel(get()) }
     viewModel { DeleteAccountViewModel(get()) }
+    viewModel { EditProfileViewModel(get())}
+
 
 }

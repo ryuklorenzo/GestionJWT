@@ -22,7 +22,7 @@ class ChangeImageViewModel(private val changeUserImageUseCase: ChangeUserImageUs
             val result = changeUserImageUseCase.invoke(userId, imageUrl)
 
             result.onSuccess {
-                _state.update { it.copy(isLoading = false, isSuccess = false, errorMessage = error.message) }
+                _state.update { it.copy(isLoading = false, isSuccess = false) }
             }
 
         }

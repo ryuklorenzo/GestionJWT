@@ -4,6 +4,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -77,7 +78,7 @@ fun EditProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (state.errorMessage != null) {
-            Text(state.errorMessage, color = MaterialTheme.colorScheme.error)
+            Text(state.errorMessage!!, color = MaterialTheme.colorScheme.error)
         }
 
     }

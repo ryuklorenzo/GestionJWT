@@ -1,6 +1,5 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.principal
 
-import ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -16,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,6 +36,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.koinInject
 import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenJwt
+import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.imagen.ChangeImageViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileViewModel
 
 data class MenuOption(
     val icon: ImageVector,
@@ -49,6 +53,9 @@ fun HomeScreen(onLogout: () -> Unit) {
 
     val changepasswordviewmodel : ChangePasswordViewModel = koinViewModel()
     val deleteacountviewmodel : DeleteAccountViewModel = koinViewModel()
+    val profileviewmodel : ProfileViewModel = koinViewModel()
+    val editprofileviewmodel : EditProfileViewModel = koinViewModel()
+    val changeimageviewmodel : ChangeImageViewModel = koinViewModel()
 
     val sessionManager: SessionManager = koinInject()
     val userId = remember {
@@ -118,18 +125,30 @@ fun HomeScreen(onLogout: () -> Unit) {
                     startDestination = ProfileRoute
                 ) {
                     composable<ProfileRoute> {
-                        ProfileScreen()
+                        ProfileScreen(
+                            profileviewmodel
+                        )
                     }
                     composable<EditProfileRoute> {
-                        EditProfileScreen()
+                        EditProfileScreen(
+                            viewModel { editprofileviewmodel },
+                            onProfileUpdate = TODO(),
+                        )
                     }
                     composable<PasswordRoute> {
                         ChangePasswordScreen(
-                            changepasswordviewmodel
+                            changepasswordviewmodel,
+                            { onLogout() }
                         )
                     }
                     composable<ImageRoute> {
-                        ChangeImageScreen()
+                        ChangeImageScreen(
+                            viewModel = changeimageviewmodel,
+                            userId = userId as String,
+                            onImageChanged = {
+                                onLogout()
+                            }
+                        )
                     }
                     composable<DeleteRoute>{
                         DeleteAccountScreen(

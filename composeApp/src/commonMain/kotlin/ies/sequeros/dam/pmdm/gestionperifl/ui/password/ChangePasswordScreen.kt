@@ -13,7 +13,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
+fun ChangePasswordScreen(
+    viewModel: ChangePasswordViewModel,
+    onPasswordChange: () -> Unit
+
+) {
     val state by viewModel.state.collectAsState()
 
     // Estados locales para controlar la visibilidad de las contraseñas (el ojo)

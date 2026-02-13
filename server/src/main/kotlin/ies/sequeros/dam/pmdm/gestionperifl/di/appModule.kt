@@ -54,4 +54,5 @@ val appModulo = module {
     factory { RefreshTokenUseCase(get(), get()) }
     factory { UpdateUserCasoDeUso(get()) }
     factory { UpdateImageUserCasoDeUso(get(), get()) }
+
 }

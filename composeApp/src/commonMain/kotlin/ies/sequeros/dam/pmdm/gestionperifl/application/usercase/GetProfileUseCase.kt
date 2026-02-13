@@ -18,7 +18,7 @@ data class UserProfileRespone(
 class GetProfileUseCase(private val client: HttpClient) {
     suspend operator fun invoke(): Result<UserProfileRespone> {
         return try {
-            val response = client.get("http://10.0.2.2:8080/api/users/me")
+            val response = client.get("http://localhost:8080/api/users/me")
 
             when (response.status) {
                 HttpStatusCode.OK -> {

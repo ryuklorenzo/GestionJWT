@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DeleteAccountScreen(
     viewModel: DeleteAccountViewModel,
-    userId: String, // Este parámetro ya no es crítico para la llamada, pero lo mantenemos si lo usas para mostrar info
+    userId: String,
     onAccountDelete: () -> Unit
 ) {
     val state = viewModel.state.collectAsState().value
