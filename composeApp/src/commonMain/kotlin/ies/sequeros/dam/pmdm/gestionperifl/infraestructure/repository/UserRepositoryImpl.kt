@@ -7,12 +7,17 @@ import ies.sequeros.dam.pmdm.gestionperifl.domain.repository.UserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlinx.serialization.Serializable
 
+@Serializable
+data class DeleteCommand(val password: String)
 class UserRepositoryImpl(
     private val client: HttpClient,
     private val tokenStorage: TokenStorage
@@ -21,7 +26,6 @@ class UserRepositoryImpl(
     private val baseUrl = "http://localhost:8080/api/public"
 
     override suspend fun login(email: String, password: String): Boolean {
-        // ... (igual que antes)
         return try {
             val response = client.post("$baseUrl/login") {
                 contentType(ContentType.Application.Json)
@@ -30,7 +34,6 @@ class UserRepositoryImpl(
 
             if (response.status == HttpStatusCode.OK) {
                 val tokens = response.body<LoginResponse>()
-                //tokenStorage.saveAccessToken(tokens.accessToken)
                 true
             } else {
                 false
@@ -49,6 +52,22 @@ class UserRepositoryImpl(
             }
             // 201 Created indica éxito
             response.status == HttpStatusCode.Created
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+    override suspend fun deleteAccount(password: String): Boolean {
+        return try {
+            val token = tokenStorage.getAccessToken()
+
+            val response = client.delete("$baseUrl/user/me") {
+                contentType(ContentType.Application.Json)
+                bearerAuth(token ?: "")
+                setBody(DeleteCommand(password = password))
+            }
+
+            response.status == HttpStatusCode.NoContent || response.status == HttpStatusCode.OK
         } catch (e: Exception) {
             e.printStackTrace()
             false

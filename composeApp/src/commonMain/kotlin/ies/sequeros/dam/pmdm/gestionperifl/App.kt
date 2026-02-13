@@ -17,7 +17,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.compose.koinInject // Necesario para inyectar SessionManager
+import org.koin.compose.koinInject
 import kotlinx.serialization.Serializable
 
 // Rutas Principales
