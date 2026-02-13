@@ -24,6 +24,7 @@ import kotlinx.serialization.SerializationException
 import org.hibernate.exception.JDBCConnectionException
 import org.postgresql.util.PSQLException
 import java.net.ConnectException
+import javax.naming.AuthenticationException
 
 fun Application.configureStatusPages() {
     //configuración
@@ -134,17 +135,12 @@ fun Application.configureStatusPages() {
             )
             call.respond(HttpStatusCode.Conflict,error)
         }
-        exception<InvalidCredentialsException>{ call, cause ->
-            val error = ErrorResponse(
-                error = "InvalidCredentialsException",
-                detalles = listOf(
-                    ValidationErrorDetail(
-                        "text",
-                        cause.message.toString()
-                    )
-                )
-            )
-            call.respond(HttpStatusCode.Conflict,error)
+        exception<InvalidCredentialsException> { call, cause ->
+            // Cambia el mensaje para saber si es contraseña o token
+            call.respond(HttpStatusCode.Unauthorized, "Credenciales incorrectas: ${cause.message}")
+        }
+        exception<AuthenticationException> { call, cause ->
+            call.respond(HttpStatusCode.Unauthorized, "Token no válido o expirado")
         }
         exception<NotFoundException>{ call, cause ->
             val error = ErrorResponse(

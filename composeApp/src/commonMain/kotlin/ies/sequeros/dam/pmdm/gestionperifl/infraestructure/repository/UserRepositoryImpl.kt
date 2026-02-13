@@ -11,6 +11,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -104,24 +105,27 @@ class UserRepositoryImpl(
     }
     override suspend fun changePassword(oldPass: String, newPass: String): Boolean {
         return try {
-            val token = tokenStorage.getAccessToken()
-            if (token.isNullOrBlank()) {
-                println("UserRepositoryImpl: No hay token disponible para actualizar la contraseña.")
-                return false
-            }
+            val token = tokenStorage.getAccessToken() ?: return false
+
             val response = client.put("http://localhost:8080/api/users/me/password") {
                 contentType(ContentType.Application.Json)
                 bearerAuth(token)
                 setBody(ChangePasswordCommand(oldPassword = oldPass, newPassword = newPass))
             }
-            if (response.status == HttpStatusCode.Unauthorized) {
-                println("Error 401: La contraseña actual es incorrecta o el token ha expirado.")
+
+            if (response.status == HttpStatusCode.OK || response.status == HttpStatusCode.NoContent) {
+                return true
+            } else {
+                // LEEMOS EL MENSAJE DE ERROR DEL SERVIDOR
+                val errorMsg = response.bodyAsText()
+                println("Error al cambiar contraseña: $errorMsg")
+
+                // Lanzamos una excepción con el mensaje del servidor para que lo capture el ViewModel
+                throw Exception(errorMsg)
             }
-            response.status == HttpStatusCode.NoContent || response.status == HttpStatusCode.OK
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-            false
+        } catch (e: Exception) {
+            // Re-lanzamos la excepción para que llegue al ViewModel
+            throw e
         }
     }
 }

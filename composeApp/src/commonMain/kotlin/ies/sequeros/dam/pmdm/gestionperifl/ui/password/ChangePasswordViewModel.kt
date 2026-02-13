@@ -41,16 +41,16 @@ class ChangePasswordViewModel(
             val result = changePasswordUseCase(oldPass, newPass)
 
             result.onSuccess {
-                _state.update {
-                    it.copy(isLoading = false, isSuccess = true, errorMessage = null, oldPassword = "", newPassword = "")
-                }
+                _state.update { it.copy(isSuccess = true, isLoading = false) }
             }.onFailure { error ->
-                val msg = if (error.message?.contains("401") == true) {
-                    "La contraseña actual no es correcta."
-                } else {
-                    "Error al cambiar contraseña: ${error.message}"
+                // error.message contendrá "Contraseña incorrecta" o "Sesión expirada"
+                // tal cual lo envió el servidor
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = error.message ?: "Error desconocido"
+                    )
                 }
-                _state.update { it.copy(isLoading = false, errorMessage = msg) }
             }
         }
     }
