@@ -3,6 +3,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 import ies.sequeros.dam.pmdm.gestionperifl.domain.model.UserStatus
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.patch
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -21,7 +22,7 @@ class UpdateUserUseCase(private val client: HttpClient) {
     suspend operator fun invoke(command: UpdateUserCommand): Result<UserProfileResponse> {
         return try {
 
-            val response = client.put("http://localhost:8080/api/users/me") {
+            val response = client.patch("http://localhost:8080/api/users/me") {
                 contentType(ContentType.Application.Json)
                 setBody(command)
             }
