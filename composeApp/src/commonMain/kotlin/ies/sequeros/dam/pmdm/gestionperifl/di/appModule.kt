@@ -19,7 +19,7 @@ import org.koin.dsl.module
 val appModulo = module {
 
     single {
-        createHttpClient("http://localhost:8080/api/public/refresh")
+        createHttpClient(get(), "http://localhost:8080/api/public/refresh")
     }
 
     single { SettingsTokenStorage(get()) }
