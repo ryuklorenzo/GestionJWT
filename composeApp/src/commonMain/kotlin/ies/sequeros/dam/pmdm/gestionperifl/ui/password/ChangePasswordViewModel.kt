@@ -29,22 +29,27 @@ class ChangePasswordViewModel(
         val newPass = _state.value.newPassword
 
         if (oldPass.isBlank() || newPass.isBlank()) {
-            _state.update { it.copy(errorMessage = "Rellena todos los campos") }
+            _state.update { it.copy(errorMessage = "Rellena ambos campos") }
             return
         }
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            // Llamamos al caso de uso.
-            // IMPORTANTE: oldPass viaja tal cual la escribió el usuario.
             val result = changePasswordUseCase(oldPass, newPass)
 
             result.onSuccess {
-                _state.update { it.copy(isSuccess = true, isLoading = false) }
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        errorMessage = null,
+                        oldPassword = "",
+                        newPassword = ""
+                    )
+                }
             }.onFailure { error ->
-                // error.message contendrá "Contraseña incorrecta" o "Sesión expirada"
-                // tal cual lo envió el servidor
+                // AQUI MOSTRAMOS EL MENSAJE QUE VINO DEL SERVIDOR
                 _state.update {
                     it.copy(
                         isLoading = false,

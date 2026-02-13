@@ -15,11 +15,11 @@ data class ChangePasswordRequest(val oldPassword: String, val newPassword: Strin
 class ChangePasswordUseCase(private val repository: UserRepository) {
     suspend operator fun invoke(oldPass: String, newPass: String): Result<Boolean> {
         return try {
-            // Ahora repository.changePassword lanzará excepción con el mensaje del servidor si falla
-            val result = repository.changePassword(oldPass, newPass)
-            Result.success(result)
+            // Si el repo lanza excepción (ej: "Credenciales incorrectas"), cae en el catch
+            val success = repository.changePassword(oldPass, newPass)
+            Result.success(success)
         } catch (e: Exception) {
-            // Capturamos la excepción (con el mensaje "Contraseña incorrecta") y la devolvemos
+            // Devolvemos el error encapsulado
             Result.failure(e)
         }
     }

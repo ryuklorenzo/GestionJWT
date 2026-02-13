@@ -28,7 +28,7 @@ data class RegisterRequest(val username: String, val email: String, val password
 data class DeleteCommand(val password: String)
 
 @Serializable
-data class ChangePasswordCommand(val oldPassword: String, val newPassword: String)
+data class ChangePasswordCommand(val old_password: String, val new_password: String)
 
 class UserRepositoryImpl(
     private val client: HttpClient,
@@ -104,27 +104,24 @@ class UserRepositoryImpl(
         }
     }
     override suspend fun changePassword(oldPass: String, newPass: String): Boolean {
-        return try {
-            val token = tokenStorage.getAccessToken() ?: return false
+        try {
+            val token = tokenStorage.getAccessToken() ?: throw Exception("No hay sesión activa")
 
-            val response = client.put("http://localhost:8080/api/users/me/password") {
+            val response = client.put("$baseUrl/users/me/password") {
                 contentType(ContentType.Application.Json)
                 bearerAuth(token)
-                setBody(ChangePasswordCommand(oldPassword = oldPass, newPassword = newPass))
+                setBody(ChangePasswordCommand(old_password = oldPass, new_password = newPass))
             }
 
             if (response.status == HttpStatusCode.OK || response.status == HttpStatusCode.NoContent) {
                 return true
             } else {
-                // LEEMOS EL MENSAJE DE ERROR DEL SERVIDOR
+                // Aquí capturamos el mensaje exacto del servidor ("Credenciales incorrectas" o "Token inválido")
                 val errorMsg = response.bodyAsText()
-                println("Error al cambiar contraseña: $errorMsg")
-
-                // Lanzamos una excepción con el mensaje del servidor para que lo capture el ViewModel
                 throw Exception(errorMsg)
             }
         } catch (e: Exception) {
-            // Re-lanzamos la excepción para que llegue al ViewModel
+            // Re-lanzamos la excepción para que llegue al UseCase
             throw e
         }
     }
