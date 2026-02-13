@@ -1,23 +1,53 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.imagen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.ImagePickerPreviewComponent
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readBytes
 
 @Composable
-fun ChangeImageScreen(){
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Cambiar Imagen de Usuario", style = MaterialTheme.typography.titleLarge)
-        // Aquí iría tu formulario de edición
-        Spacer(Modifier.height(40.dp))
-        Column {
-            Text("VEGETTA MINIATURA MINIATURA")
+fun ChangeImageScreen(
+    viewModel: ChangeImageViewModel,
+    userId: String,
+    currentImageUrl: String?,
+    onImageChanged: () -> Unit
+) {
+    val state by viewModel.state.collectAsState()
+    var selectedFile by remember { mutableStateOf<PlatformFile?>(null) }
+
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        ImagePickerPreviewComponent(
+            imageUrl = currentImageUrl,
+            selectedFile = selectedFile,
+            onFileSelected = { file ->
+                selectedFile = file
+            },
+            onConfirm = {
+                selectedFile?.let { file ->
+                    scope.launch {
+                        val bytes = file.readBytes()
+                        viewModel.changeImage(userId, bytes)
+                    }
+                }
+            }
+        )
+
+        LaunchedEffect(state.isSuccess) {
+            if (state.isSuccess) {
+                onImageChanged()
+            }
         }
     }
 }
