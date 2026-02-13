@@ -66,7 +66,7 @@ fun DeleteAccountScreen(
 
         if (state.errorMessage != null) {
             Text(
-                text = state.errorMessage,
+                text = state.errorMessage!!,
                 color = MaterialTheme.colorScheme.error
             )
         }

@@ -3,6 +3,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui
 import ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Image
@@ -17,10 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ies.sequeros.dam.pmdm.gestionperifl.DeleteRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.EditProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ImageRoute
 import ies.sequeros.dam.pmdm.gestionperifl.PasswordRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.imagen.ChangeImageScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
@@ -38,8 +42,9 @@ data class MenuOption(
 fun HomeScreen(onLogout: () -> Unit) {
     val subNavController = rememberNavController()
     val changepasswordviewmodel : ChangePasswordViewModel = koinViewModel()
+    val deleteacountviewmodel : DeleteAccountViewModel = koinViewModel()
 
-    // Configuración de las opciones del menú (Similar a ItemOption en VegaBurguer)
+
     val options = listOf(
         MenuOption(Icons.Default.Person, "Ver Perfil") {
             subNavController.navigate(ProfileRoute) { launchSingleTop = true }
@@ -51,7 +56,10 @@ fun HomeScreen(onLogout: () -> Unit) {
             subNavController.navigate(PasswordRoute) { launchSingleTop = true }
         },
         MenuOption(Icons.Default.Image, "Cambiar Imagen"){
-            subNavController.navigate(ImageRoute) { launchSingleTop = true } // cambiar ruta por imagen
+            subNavController.navigate(ImageRoute) { launchSingleTop = true }
+        },
+        MenuOption(Icons.Default.Delete, "Eliminar Cuenta"){
+            subNavController.navigate(DeleteRoute)
         },
         MenuOption(Icons.Default.ExitToApp, "Cerrar Sesión") {
             onLogout()
@@ -107,6 +115,12 @@ fun HomeScreen(onLogout: () -> Unit) {
                     }
                     composable<ImageRoute> {
                         ChangeImageScreen()
+                    }
+                    composable<DeleteRoute>{
+                        DeleteAccountScreen(
+                            deleteacountviewmodel,
+
+                        )
                     }
                 }
             }

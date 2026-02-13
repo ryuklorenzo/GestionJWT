@@ -37,6 +37,9 @@ object EditProfileRoute
 object PasswordRoute
 @Serializable
 object ImageRoute
+@Serializable
+object DeleteRoute
+
 
 
 @Composable

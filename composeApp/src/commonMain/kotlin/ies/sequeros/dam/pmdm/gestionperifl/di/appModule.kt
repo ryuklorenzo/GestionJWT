@@ -9,6 +9,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.SettingsToken
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
@@ -42,5 +43,6 @@ val appModulo = module {
 
     viewModel { RegisterFormViewModel(get()) }
     viewModel { ChangePasswordViewModel(get()) }
+    viewModel { DeleteAccountViewModel(get()) }
 
 }
