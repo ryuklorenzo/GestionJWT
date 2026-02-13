@@ -21,6 +21,8 @@ import ies.sequeros.dam.pmdm.gestionperifl.EditProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.PasswordRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 //import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileScreen
 //import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
@@ -36,6 +38,7 @@ data class MenuOption(
 @Composable
 fun HomeScreen(onLogout: () -> Unit) {
     val subNavController = rememberNavController()
+    val changepasswordviewmodel : ChangePasswordViewModel = koinViewModel()
 
     // Configuración de las opciones del menú (Similar a ItemOption en VegaBurguer)
     val options = listOf(
@@ -96,7 +99,9 @@ fun HomeScreen(onLogout: () -> Unit) {
                         EditProfileScreen()
                     }
                     composable<PasswordRoute> {
-                        ChangePasswordScreen()
+                        ChangePasswordScreen(
+                            changepasswordviewmodel
+                        )
                     }
                 }
             }
