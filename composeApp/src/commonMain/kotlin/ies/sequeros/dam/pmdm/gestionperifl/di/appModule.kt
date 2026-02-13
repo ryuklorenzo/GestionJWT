@@ -37,6 +37,7 @@ val appModulo = module {
     single { GetProfileUseCase(get()) }
     single { LogoutUseCase(get(), get()) }
     single { UpdateUserUseCase(get()) }
+    single { DeleteUserUseCase(get()) }
 
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get(), get()) }

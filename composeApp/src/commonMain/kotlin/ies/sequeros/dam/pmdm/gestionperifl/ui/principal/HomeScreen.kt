@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.ui
+package ies.sequeros.dam.pmdm.gestionperifl.ui.principal
 
 import ProfileScreen
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,6 +32,10 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
+// Nuevos imports necesarios para la lógica del ID de usuario
+import org.koin.compose.koinInject
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
+import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenJwt
 
 data class MenuOption(
     val icon: ImageVector,
@@ -41,9 +46,20 @@ data class MenuOption(
 @Composable
 fun HomeScreen(onLogout: () -> Unit) {
     val subNavController = rememberNavController()
+
     val changepasswordviewmodel : ChangePasswordViewModel = koinViewModel()
     val deleteacountviewmodel : DeleteAccountViewModel = koinViewModel()
 
+    val sessionManager: SessionManager = koinInject()
+    val userId = remember {
+        try {
+            sessionManager.getAccessToken()?.let { token ->
+                TokenJwt(token).payload.userId
+            } ?: ""
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     val options = listOf(
         MenuOption(Icons.Default.Person, "Ver Perfil") {
@@ -93,7 +109,6 @@ fun HomeScreen(onLogout: () -> Unit) {
             }
         },
         content = {
-            // Este es el panel derecho que cambia dinámicamente
             Column(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -118,8 +133,11 @@ fun HomeScreen(onLogout: () -> Unit) {
                     }
                     composable<DeleteRoute>{
                         DeleteAccountScreen(
-                            deleteacountviewmodel,
-
+                            viewModel = deleteacountviewmodel,
+                            userId = userId as String,
+                            onAccountDelete = {
+                                onLogout()
+                            }
                         )
                     }
                 }

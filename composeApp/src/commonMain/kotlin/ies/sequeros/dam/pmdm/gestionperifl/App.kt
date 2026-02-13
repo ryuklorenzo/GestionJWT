@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
-import ies.sequeros.dam.pmdm.gestionperifl.ui.HomeScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.principal.HomeScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
