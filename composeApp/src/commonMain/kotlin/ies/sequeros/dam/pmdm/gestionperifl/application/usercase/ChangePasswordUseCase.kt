@@ -13,9 +13,9 @@ data class ChangePasswordRequest(val oldPassword: String, val newPassword: Strin
 
 class ChangePasswordUseCase(private val client: HttpClient) {
 
-    // CAMBIO 1: Cambiado Result<String> a Result<Unit> porque devuelves Unit al tener éxito
-    suspend operator fun invoke(oldPass: String, newPass: String): Result<Unit> {
         // CAMBIO 2: Añadido 'return' aquí para devolver el resultado del bloque
+    suspend operator fun invoke(oldPass: String, newPass: String): Result<Unit> {
+
         return try {
             // Nota: 10.0.2.2 funciona para el Emulador de Android.
             // Si usas Desktop, deberías usar "localhost".
