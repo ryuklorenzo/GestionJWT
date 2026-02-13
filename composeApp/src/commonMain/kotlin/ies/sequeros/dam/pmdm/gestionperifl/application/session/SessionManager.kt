@@ -2,8 +2,9 @@ package ies.sequeros.dam.pmdm.gestionperifl.application.session
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.model.AuthTokens
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.SettingsTokenStorage
+import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 
-class SessionManager(private val tokenStorage: SettingsTokenStorage) {
+class SessionManager(private val tokenStorage: TokenStorage) {
 
     fun saveSession(responseTokens: AuthTokens) {
         tokenStorage.saveAllTokens(responseTokens)

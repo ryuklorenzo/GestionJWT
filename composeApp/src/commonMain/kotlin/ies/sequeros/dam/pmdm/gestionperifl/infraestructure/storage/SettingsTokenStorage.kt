@@ -17,7 +17,7 @@ class SettingsTokenStorage(
         settings.putString(KEY_ACCESS_TOKEN, token)
     }
 //guardamos los tokens de inicio de sesion
-    fun saveAllTokens(tokens: AuthTokens) {
+    override fun saveAllTokens(tokens: AuthTokens) {
         settings.putString(KEY_ACCESS_TOKEN, tokens.accessToken)
         settings.putString(KEY_ID_TOKEN, tokens.idToken)
         tokens.refreshToken?.let {

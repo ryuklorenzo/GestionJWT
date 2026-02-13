@@ -7,7 +7,7 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
-import ies.sequeros.dam.pmdm.gestionperifl.di.appModulo
+import ies.sequeros.dam.pmdm.gestionperifl.di.appModule
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.dsl.module
 import java.util.prefs.Preferences
@@ -21,7 +21,7 @@ val DesktopPlatformModule = module {
 fun main() {
     startKoin {
         printLogger()
-        modules(appModulo, DesktopPlatformModule)
+        modules(appModule, DesktopPlatformModule)
     }
 
 
