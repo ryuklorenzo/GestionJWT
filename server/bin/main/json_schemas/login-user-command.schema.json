@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+      "minLength": 5,
+      "maxLength": 255,
+      "description": "Correo electrónico del usuario"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 1,
+      "description": "La contraseña no puede estar vacía"
+    }
+  },
+  "required": ["email", "password"],
+  "additionalProperties": false
+}

@@ -1,0 +1,15 @@
+acceder adminer:
+postgre
+db
+administrador
+administrador
+gestionjwt
+
+Funcionar app:
+PRIMERO INICIAR SERVER
+./gradlew :server:run
+
+Luego ya iniciar app:
+./gradlew :composeApp:app
+
+

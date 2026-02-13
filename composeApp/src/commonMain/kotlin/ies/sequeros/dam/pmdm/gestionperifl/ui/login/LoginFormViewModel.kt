@@ -2,7 +2,8 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
+import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,19 +12,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginFormViewModel(
-    //inyectar caso de uso
-   // val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
-    val isFormValid = MutableStateFlow(false)
+
+    private val isFormValid = MutableStateFlow(false)
+    private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
     fun onEmailChange(email: String) {
         _state.update {
             it.copy(
                 email = email,
-                emailError = if (email.contains("@")) null else "Email no válido"
+                emailError = if (emailPattern.matches(email)) null else "Email no válido",
+                errorMessage = null
             )
         }
         validateForm()
@@ -33,7 +37,8 @@ class LoginFormViewModel(
         _state.update {
             it.copy(
                 password = password,
-                passwordError = if (password.length >= 6) null else "Mínimo 6 caracteres"
+                passwordError = if (password.length >= 6) null else "Mínimo 6 caracteres",
+                errorMessage = null
             )
         }
         validateForm()
@@ -41,49 +46,65 @@ class LoginFormViewModel(
 
     private fun validateForm() {
         val s = _state.value
-        isFormValid.value = s.email.isNotBlank() &&
+        val isValid = s.email.isNotBlank() &&
                 s.password.isNotBlank() &&
                 s.emailError == null &&
                 s.passwordError == null
-        _state.value=state.value.copy( isValid = isFormValid.value)
+
+        isFormValid.value = isValid
+        _state.update { it.copy(isValid = isValid) }
     }
 
     fun login() {
+        //valirdar antes por si acaso
+        if (!_state.value.isValid) return
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
-            try {
-                //cargando
-                _state.value = state.value.copy(isLoading = true)
-                //crear el comando, llamar al caso de uso
-                //que devuelve ok, o un error en el result
 
-                val loginCommand =
-                    LoginCommand(
-                        email = state.value.email,
-                        password = state.value.password
+            try {
+                // 2. Llamada al caso de uso pasando el estado actual
+                val result = loginUseCase(_state.value)
+
+                result.onSuccess { response ->
+                    //guardamos tokens
+                    sessionManager.saveSession(
+                        accessToken = response.access_token,
+                        idToken = response.id_token,
+                        refreshToken = response.refresh_token
                     )
 
-                val result=loginUseCase(loginCommand).onSuccess{
-                    //_state.value = _state.value.copy(isLoginSuccess = true)
-                    _state.update { it.copy(isLoading = false, isLoginSuccess = true) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isLoginSuccess = true,
+                            errorMessage = null
+                        )
+                    }
+                }.onFailure { error ->
+                    //fallos
+                    val mensajeError = if (error.message?.contains("Credenciales") == true) {
+                        "Credenciales incorrectas"
+                    } else {
+                        "Error al conectar: ${error.message}"
+                    }
 
-                }.onFailure {
-                    _state.update { it.copy(isLoading = false, isLoginSuccess = false) }
-                    //meter aqui el error
-
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isLoginSuccess = false,
+                            errorMessage = mensajeError
+                        )
+                    }
                 }
-o
-
 
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Error al conectar: ${e.message}"
+                        errorMessage = "Error inesperado: ${e.message}"
                     )
                 }
-            } finally {
-                _state.value = _state.value.copy(isLoading = false)
             }
         }
     }
