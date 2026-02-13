@@ -36,7 +36,6 @@ data class MenuOption(
 fun HomeScreen(onLogout: () -> Unit) {
     val subNavController = rememberNavController()
 
-    // Configuración de las opciones del menú (Similar a ItemOption en VegaBurguer)
     val options = listOf(
         MenuOption(Icons.Default.Person, "Ver Perfil") {
             subNavController.navigate(ProfileRoute) { launchSingleTop = true }
@@ -82,7 +81,6 @@ fun HomeScreen(onLogout: () -> Unit) {
             }
         },
         content = {
-            // Este es el panel derecho que cambia dinámicamente
             Column(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
