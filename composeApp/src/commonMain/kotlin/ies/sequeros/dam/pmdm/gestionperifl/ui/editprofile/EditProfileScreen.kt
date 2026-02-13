@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ies.sequeros.dam.pmdm.gestionperifl.domain.model.UserStatus
+import ies.sequeros.com.dam.pmdm.administrador.ui.productos.form.ComboBox
 
 @Composable
 fun EditProfileScreen(
@@ -48,16 +50,21 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = state.email,
-            onValueChange = { viewModel.onEmailChange(it) },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
-            isError = state.emailError != null
+        ComboBox(
+            items = UserStatus.values().toList(),
+            label = "Estado",
+            current = state.status,
+            itemLabel = {
+                when (it) {
+                    UserStatus.pending -> "Pendiente"
+                    UserStatus.active -> "Activo"
+                    UserStatus.inactive -> "Inactivo"
+                    UserStatus.suspended -> "Suspendido"
+                }
+            },
+            onSelect = { viewModel.onStatusChange(it) },
+            editable = true
         )
-        state.emailError?.let {
-            Text(it, color = MaterialTheme.colorScheme.error)
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

@@ -134,7 +134,6 @@ fun HomeScreen(onLogout: () -> Unit) {
                             viewModel { editprofileviewmodel },
                             onProfileUpdate = {
                                 profileviewmodel.loadProfile()
-                                subNavController.navigate(ProfileRoute)
                             }
                         )
                     }

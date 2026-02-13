@@ -1,10 +1,13 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile
+
+import ies.sequeros.dam.pmdm.gestionperifl.domain.model.UserStatus
+
 data class EditProfileFormState(
     val username: String = "",
-    val email: String = "",
+    val status: UserStatus? = null,
 
     val usernameError: String? = null,
-    val emailError: String? = null,
+    val statusError: String? = null,
 
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
@@ -12,7 +15,6 @@ data class EditProfileFormState(
 ) {
     val isValid: Boolean
         get() = usernameError == null &&
-                emailError == null &&
                 username.isNotBlank() &&
-                email.isNotBlank()
+                status != null
 }
