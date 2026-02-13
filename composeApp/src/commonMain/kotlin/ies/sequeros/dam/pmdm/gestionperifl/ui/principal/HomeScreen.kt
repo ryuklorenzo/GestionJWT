@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -18,15 +19,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ies.sequeros.dam.pmdm.gestionperifl.ProfileRoute
 import ies.sequeros.dam.pmdm.gestionperifl.EditProfileRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ImageRoute
 import ies.sequeros.dam.pmdm.gestionperifl.PasswordRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.imagen.ChangeImageScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
 import org.koin.compose.viewmodel.koinViewModel
-
-//import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileScreen
-//import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
-//import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordScreen
 
 
 data class MenuOption(
@@ -50,6 +49,9 @@ fun HomeScreen(onLogout: () -> Unit) {
         },
         MenuOption(Icons.Default.Lock, "Seguridad") {
             subNavController.navigate(PasswordRoute) { launchSingleTop = true }
+        },
+        MenuOption(Icons.Default.Image, "Cambiar Imagen"){
+            subNavController.navigate(ImageRoute) { launchSingleTop = true } // cambiar ruta por imagen
         },
         MenuOption(Icons.Default.ExitToApp, "Cerrar Sesión") {
             onLogout()
@@ -102,6 +104,9 @@ fun HomeScreen(onLogout: () -> Unit) {
                         ChangePasswordScreen(
                             changepasswordviewmodel
                         )
+                    }
+                    composable<ImageRoute> {
+                        ChangeImageScreen()
                     }
                 }
             }
