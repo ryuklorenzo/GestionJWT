@@ -2,6 +2,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ies.sequeros.dam.pmdm.gestionperifl.application.session.SessionManager
 import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.LoginUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,13 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginFormViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
-    // Control interno de validación (opcional si ya lo tienes en el state)
     private val isFormValid = MutableStateFlow(false)
     private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
 
@@ -26,7 +27,7 @@ class LoginFormViewModel(
             it.copy(
                 email = email,
                 emailError = if (emailPattern.matches(email)) null else "Email no válido",
-                errorMessage = null // Limpiamos errores globales al escribir
+                errorMessage = null
             )
         }
         validateForm()
@@ -37,7 +38,7 @@ class LoginFormViewModel(
             it.copy(
                 password = password,
                 passwordError = if (password.length >= 6) null else "Mínimo 6 caracteres",
-                errorMessage = null // Limpiamos errores globales al escribir
+                errorMessage = null
             )
         }
         validateForm()
@@ -55,11 +56,10 @@ class LoginFormViewModel(
     }
 
     fun login() {
-        // Validamos antes de enviar por si acaso
+        //valirdar antes por si acaso
         if (!_state.value.isValid) return
 
         viewModelScope.launch {
-            // 1. Estado de carga y limpiar errores previos
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
@@ -67,8 +67,12 @@ class LoginFormViewModel(
                 val result = loginUseCase(_state.value)
 
                 result.onSuccess { response ->
-                    // 3. Éxito: Guardamos tokens (opcional aquí o en el UseCase) y navegamos
-                    // TODO: Aquí deberías guardar response.access_token en tu SessionManager o DataStore
+                    //guardamos tokens
+                    sessionManager.saveSession(
+                        accessToken = response.access_token,
+                        idToken = response.id_token,
+                        refreshToken = response.refresh_token
+                    )
 
                     _state.update {
                         it.copy(
@@ -78,7 +82,7 @@ class LoginFormViewModel(
                         )
                     }
                 }.onFailure { error ->
-                    // 4. Fallo: Mostramos error
+                    //fallos
                     val mensajeError = if (error.message?.contains("Credenciales") == true) {
                         "Credenciales incorrectas"
                     } else {
@@ -95,7 +99,6 @@ class LoginFormViewModel(
                 }
 
             } catch (e: Exception) {
-                // Excepción inesperada (aunque el UseCase ya captura casi todo)
                 _state.update {
                     it.copy(
                         isLoading = false,

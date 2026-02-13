@@ -1,4 +1,6 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.profile
 
-class ProfileViewModel {
+import androidx.lifecycle.ViewModel
+
+class ProfileViewModel(): ViewModel() {
 }
