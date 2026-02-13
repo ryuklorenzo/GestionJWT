@@ -61,7 +61,7 @@ class UserRepositoryImpl(
         return try {
             val token = tokenStorage.getAccessToken()
 
-            val response = client.delete("$baseUrl/user/me") {
+            val response = client.delete("http://localhost:8080/api/users/me") {
                 contentType(ContentType.Application.Json)
                 bearerAuth(token ?: "")
                 setBody(DeleteCommand(password = password))
