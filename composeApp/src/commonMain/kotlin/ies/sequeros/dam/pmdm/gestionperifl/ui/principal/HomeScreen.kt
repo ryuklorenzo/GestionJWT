@@ -132,7 +132,7 @@ fun HomeScreen(onLogout: () -> Unit) {
                     composable<EditProfileRoute> {
                         EditProfileScreen(
                             viewModel { editprofileviewmodel },
-                            onProfileUpdate = TODO(),
+                            onProfileUpdate = TODO()
                         )
                     }
                     composable<PasswordRoute> {
