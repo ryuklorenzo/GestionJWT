@@ -10,6 +10,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -40,4 +41,6 @@ val appModulo = module {
     viewModel { LoginFormViewModel(get(), get()) }
 
     viewModel { RegisterFormViewModel(get()) }
+    viewModel { ChangePasswordViewModel(get()) }
+
 }

@@ -19,7 +19,7 @@ class ChangePasswordUseCase(private val client: HttpClient) {
         return try {
             // Nota: 10.0.2.2 funciona para el Emulador de Android.
             // Si usas Desktop, deberías usar "localhost".
-            val response = client.put("http://10.0.2.2:8080/api/users/me/password") {
+            val response = client.put("http://localhost:8080/api/users/me/password") {
                 contentType(ContentType.Application.Json)
                 setBody(ChangePasswordRequest(oldPassword = oldPass, newPassword = newPass))
             }
