@@ -13,7 +13,7 @@ data class ChangePasswordRequest(val oldPassword: String, val newPassword: Strin
 
 class ChangePasswordUseCase(private val client: HttpClient) {
 
-    suspend operator fun invoke(oldPass: String, newPass: String): Result<String> {
+    suspend operator fun invoke(oldPass: String, newPass: String): Result<Unit> {
         return try {
             val response = client.put("http://10.0.2.2:8080/api/users/me/password") {
                 contentType(ContentType.Application.Json)
@@ -25,10 +25,10 @@ class ChangePasswordUseCase(private val client: HttpClient) {
                     Result.success(Unit)
                 }
                 HttpStatusCode.BadRequest -> {
-                    Result.failture(Exception("La contraseña antigua no es correcta o la nueva no cumple los requisitos"))
+                    Result.failure(Exception("La contraseña antigua no es correcta o la nueva no cumple los requisitos"))
                 }
                 HttpStatusCode.Unauthorized -> {
-                    Result.failture(Exception("Sesión no válida"))
+                    Result.failure(Exception("Sesión no válida"))
                 }
                 else -> {
                     Result.failure(Exception("Error al cambiar contraseña: ${response.status.value}"))
