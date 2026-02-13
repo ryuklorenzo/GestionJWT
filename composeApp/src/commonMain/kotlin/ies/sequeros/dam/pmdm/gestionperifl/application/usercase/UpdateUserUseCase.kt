@@ -1,5 +1,6 @@
 package ies.sequeros.dam.pmdm.gestionperifl.application.usercase
 
+import ies.sequeros.dam.pmdm.gestionperifl.domain.model.UserStatus
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.put
@@ -12,8 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateUserCommand(
     val name: String,
-    val email: String //la variable tiene que llamarse status clase UserStatus
-    //val status: UserStatus
+    val status: UserStatus
 )
 
 class UpdateUserUseCase(private val client: HttpClient) {
