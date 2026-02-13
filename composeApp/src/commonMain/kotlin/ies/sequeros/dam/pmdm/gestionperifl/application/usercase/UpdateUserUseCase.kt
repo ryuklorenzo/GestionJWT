@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UpdateUserCommand(
-    val username: String,
+    val name: String,
     val email: String
 )
 
@@ -20,7 +20,7 @@ class UpdateUserUseCase(private val client: HttpClient) {
     suspend operator fun invoke(command: UpdateUserCommand): Result<UserProfileResponse> {
         return try {
 
-            val response = client.put("http://10.0.2.2:8080/api/users/me") {
+            val response = client.put("http://localhost:8080/api/users/me") {
                 contentType(ContentType.Application.Json)
                 setBody(command)
             }
