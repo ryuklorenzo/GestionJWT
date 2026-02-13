@@ -12,7 +12,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateUserCommand(
     val name: String,
-    val email: String
+    val email: String //la variable tiene que llamarse status clase UserStatus
+    //val status: UserStatus
 )
 
 class UpdateUserUseCase(private val client: HttpClient) {

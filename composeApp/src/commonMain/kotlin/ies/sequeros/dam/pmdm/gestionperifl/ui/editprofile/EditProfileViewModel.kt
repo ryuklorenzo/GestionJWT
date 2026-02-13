@@ -59,8 +59,9 @@ class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) :
 
             val result = updateUserUseCase(
                 UpdateUserCommand(
-                    username = s.username,
+                    name = s.username,
                     email = s.email
+                    //status
                 )
             )
 
