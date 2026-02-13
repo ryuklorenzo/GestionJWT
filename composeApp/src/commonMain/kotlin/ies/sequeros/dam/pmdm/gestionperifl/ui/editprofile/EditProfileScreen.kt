@@ -56,9 +56,10 @@ fun EditProfileScreen(
             current = state.status,
             itemLabel = {
                 when (it) {
-                    UserStatus.ACTIVE -> "Activo"
-                    UserStatus.INACTIVE -> "Inactivo"
-                    UserStatus.BANNED -> "Bloqueado"
+                    UserStatus.pending -> "Pendiente"
+                    UserStatus.active -> "Activo"
+                    UserStatus.inactive -> "Inactivo"
+                    UserStatus.suspended -> "Suspendido"
                 }
             },
             onSelect = { viewModel.onStatusChange(it) },
