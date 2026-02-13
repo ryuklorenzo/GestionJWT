@@ -13,3 +13,5 @@ Luego ya iniciar app:
 ./gradlew :composeApp:app
 
 
+cuando cambio de contraseña cerrar sesion
+un pluggin de refresh token
