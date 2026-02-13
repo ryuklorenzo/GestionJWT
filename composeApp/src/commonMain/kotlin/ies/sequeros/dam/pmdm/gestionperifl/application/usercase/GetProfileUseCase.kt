@@ -10,9 +10,10 @@ import okio.EOFException
 @Serializable
 data class UserProfileRespone(
     val id: String,
-    val username: String,
+    val name: String,
     val email: String,
-    val createdAt: String
+    val image: String,
+    val status: String
 )
 
 class GetProfileUseCase(private val client: HttpClient) {

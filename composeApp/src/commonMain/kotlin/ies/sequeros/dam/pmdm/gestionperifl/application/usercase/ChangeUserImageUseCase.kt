@@ -22,7 +22,7 @@ class ChangeUserImageUseCase(
 
         return try {
             val response = client.patch(
-                "http://10.0.2.2:8080/api/users/$userId/image"
+                "http://localhost:8080/api/users/me/image"
             ) {
                 setBody(
                     MultiPartFormDataContent(

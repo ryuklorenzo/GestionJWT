@@ -42,11 +42,13 @@ fun ProfileScreen(
             }
 
             else -> {
-                ProfileItem("Usuario", state.username)
-                Spacer(modifier = Modifier.height(8.dp))
-                ProfileItem("Email", state.email)
-                Spacer(modifier = Modifier.height(8.dp))
-                ProfileItem("Creado el", state.createdAt)
+                ProfileItem("Usuario:", state.name)
+                Spacer(modifier = Modifier.height(20.dp))
+                ProfileItem("Email:", state.email)
+                Spacer(modifier = Modifier.height(20.dp))
+                ProfileItem("Imagenes:", state.image)
+                Spacer(modifier = Modifier.height(20.dp))
+                ProfileItem("Estado de la cuenta:", state.status)
             }
         }
     }

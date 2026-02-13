@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) : ViewModel() {
+class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : ViewModel() {
 
     private val _state = MutableStateFlow(EditProfileFormState())
     val state: StateFlow<EditProfileFormState> = _state.asStateFlow()
@@ -27,7 +27,6 @@ class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) :
                 errorMessage = null
             )
         }
-        validateForm()
     }
 
     fun onEmailChange(email: String) {
@@ -38,17 +37,8 @@ class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) :
                 errorMessage = null
             )
         }
-        validateForm()
     }
 
-    private fun validateForm() {
-        val s = _state.value
-        val isValid = s.username.isNotBlank() &&
-                s.email.isNotBlank() &&
-                s.usernameError == null &&
-                s.emailError == null
-        _state.update { it.copy(isValid = isValid) }
-    }
 
     fun updateProfile() {
         val s = _state.value
@@ -59,8 +49,9 @@ class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) :
 
             val result = updateUserUseCase(
                 UpdateUserCommand(
-                    username = s.username,
+                    name = s.username,
                     email = s.email
+                    //status
                 )
             )
 

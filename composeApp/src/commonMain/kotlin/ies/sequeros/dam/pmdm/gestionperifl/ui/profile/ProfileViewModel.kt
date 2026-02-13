@@ -28,9 +28,10 @@ class ProfileViewModel( private val getProfileUseCase: GetProfileUseCase): ViewM
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        username = profile.username,
+                        name = profile.name,
                         email = profile.email,
-                        createdAt = profile.createdAt
+                        image = profile.image,
+                        status = profile.status
                     )
                 }
             }.onFailure { error ->
