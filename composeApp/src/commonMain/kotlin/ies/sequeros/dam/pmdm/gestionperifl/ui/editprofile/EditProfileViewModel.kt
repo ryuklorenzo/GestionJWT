@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.UpdateUserCommand
 import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.UpdateUserUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.domain.model.UserStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,8 +18,6 @@ class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : V
     private val _state = MutableStateFlow(EditProfileFormState())
     val state: StateFlow<EditProfileFormState> = _state.asStateFlow()
 
-    private val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[a-zA-Z]{2,}$")
-
     fun onUsernameChange(username: String) {
         _state.update {
             it.copy(
@@ -29,11 +28,11 @@ class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : V
         }
     }
 
-    fun onEmailChange(email: String) {
+    fun onStatusChange(status: UserStatus) {
         _state.update {
             it.copy(
-                email = email,
-                emailError = if (emailPattern.matches(email)) null else "Email no válido",
+                status = status,
+                statusError = null,
                 errorMessage = null
             )
         }
@@ -50,8 +49,7 @@ class EditProfileViewModel(private val updateUserUseCase: UpdateUserUseCase) : V
             val result = updateUserUseCase(
                 UpdateUserCommand(
                     name = s.username,
-                    email = s.email
-                    //status
+                    status = s.status!!
                 )
             )
 
