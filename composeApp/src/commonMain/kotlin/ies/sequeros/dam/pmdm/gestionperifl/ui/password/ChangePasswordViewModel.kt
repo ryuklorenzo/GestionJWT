@@ -16,61 +16,47 @@ class ChangePasswordViewModel(
     private val _state = MutableStateFlow(ChangePasswordFormState())
     val state: StateFlow<ChangePasswordFormState> = _state.asStateFlow()
 
-    fun onOldPasswordChange(old: String) {
-        _state.update {
-            it.copy(
-                oldPassword = old,
-                oldPasswordError = if (old.isNotBlank()) null else "Campo requerido",
-                errorMessage = null
-            )
+    fun onOldPasswordChange(text: String) {
+        _state.update { it.copy(oldPassword = text, errorMessage = null) }
+    }
+
+    fun onNewPasswordChange(text: String) {
+        _state.update { it.copy(newPassword = text, errorMessage = null) }
+    }
+
+    fun submit() {
+        val oldPass = _state.value.oldPassword
+        val newPass = _state.value.newPassword
+
+        if (oldPass.isBlank() || newPass.isBlank()) {
+            _state.update { it.copy(errorMessage = "Rellena ambos campos") }
+            return
         }
-        validateForm()
-    }
-
-    fun onNewPasswordChange(new: String) {
-        _state.update {
-            it.copy(
-                newPassword = new,
-                newPasswordError = if (new.length >= 6) null else "Mínimo 6 caracteres",
-                errorMessage = null
-            )
-        }
-        validateForm()
-    }
-
-    private fun validateForm() {
-        val s = _state.value
-        val isValid = s.oldPassword.isNotBlank() &&
-                s.newPassword.isNotBlank() &&
-                s.oldPasswordError == null &&
-                s.newPasswordError == null
-        _state.update { it.copy(isValid = isValid) }
-    }
-
-    fun changePassword() {
-        val s = _state.value
-        if (!s.isValid) return
 
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, errorMessage = null) }
+            _state.update { it.copy(isLoading = true) }
 
-            val result = changePasswordUseCase(s.oldPassword, s.newPassword)
+            val result = changePasswordUseCase(oldPass, newPass)
 
             result.onSuccess {
-                _state.update { it.copy(isLoading = false, isSuccess = true) }
-            }.onFailure { error ->
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        isSuccess = false,
+                        isSuccess = true,
+                        errorMessage = null,
+                        oldPassword = "",
+                        newPassword = ""
+                    )
+                }
+            }.onFailure { error ->
+                // AQUI MOSTRAMOS EL MENSAJE QUE VINO DEL SERVIDOR
+                _state.update {
+                    it.copy(
+                        isLoading = false,
                         errorMessage = error.message ?: "Error desconocido"
                     )
                 }
             }
         }
-    }
-
-    fun resetState() {
-        _state.value = ChangePasswordFormState()
     }
 }

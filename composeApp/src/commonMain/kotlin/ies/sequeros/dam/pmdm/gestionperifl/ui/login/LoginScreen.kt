@@ -9,15 +9,14 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit,      // Callback para navegar al Home
+    onLogin: () -> Unit,
     onRegister: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val viewModel = koinViewModel<LoginFormViewModel>()
     val state by viewModel.state.collectAsState()
 
-    // Efecto secundario: Navegación
-    // Escucha cambios en state.isLoginSuccess. Si se pone a true, navega.
+    //si es true navega
     LaunchedEffect(state.isLoginSuccess) {
         if (state.isLoginSuccess) {
             onLogin() // Navega a HomeScreen

@@ -1,15 +1,28 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.password
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
+fun ChangePasswordScreen(
+    viewModel: ChangePasswordViewModel,
+    onPasswordChange: () -> Unit
+
+) {
     val state by viewModel.state.collectAsState()
+
+    // Estados locales para controlar la visibilidad de las contraseñas (el ojo)
+    var oldPasswordVisible by remember { mutableStateOf(false) }
+    var newPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -21,47 +34,62 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
 
         Text("Cambiar Contraseña", style = MaterialTheme.typography.titleLarge)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
+        // --- CAMPO CONTRASEÑA ANTIGUA ---
         OutlinedTextField(
             value = state.oldPassword,
             onValueChange = { viewModel.onOldPasswordChange(it) },
-            label = { Text("Contraseña antigua") },
+            label = { Text("Contraseña actual") },
             modifier = Modifier.fillMaxWidth(),
-            isError = state.oldPasswordError != null
+            singleLine = true,
+            // Ocultar o mostrar contraseña
+            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (oldPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = { oldPasswordVisible = !oldPasswordVisible }) {
+                    Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                }
+            },
+            isError = state.errorMessage != null && state.errorMessage!!.contains("actual", ignoreCase = true)
         )
 
-        state.oldPasswordError?.let { error ->
-            Text(
-                text = error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
+        // --- CAMPO NUEVA CONTRASEÑA ---
         OutlinedTextField(
             value = state.newPassword,
             onValueChange = { viewModel.onNewPasswordChange(it) },
             label = { Text("Nueva contraseña") },
             modifier = Modifier.fillMaxWidth(),
-            isError = state.newPasswordError != null
+            singleLine = true,
+            // Ocultar o mostrar contraseña
+            visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
+                    Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                }
+            },
+            isError = state.errorMessage != null && state.errorMessage!!.contains("nueva", ignoreCase = true)
         )
-        state.newPasswordError?.let { error ->
+
+        // Mostrar mensaje de error general si existe
+        if (state.errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = error,
+                text = state.errorMessage!!,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodyMedium
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { viewModel.changePassword() },
+            onClick = { viewModel.submit() },
             modifier = Modifier.fillMaxWidth(),
-            enabled = state.isValid && !state.isLoading
+            enabled = !state.isLoading && state.oldPassword.isNotBlank() && state.newPassword.isNotBlank()
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
@@ -69,7 +97,7 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
                     modifier = Modifier.size(24.dp)
                 )
             } else {
-                Text("Cambiar")
+                Text("Cambiar Contraseña")
             }
         }
 
@@ -77,16 +105,11 @@ fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
 
         if (state.isSuccess) {
             Text(
-                "Contraseña cambiada con éxito",
-                color = MaterialTheme.colorScheme.primary
+                "¡Contraseña cambiada con éxito!",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyLarge
             )
-        } else {
-            state.errorMessage?.let { msg ->
-                Text(
-                    msg,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
+            // Opcional: Podrías llamar a una función para navegar atrás o cerrar sesión aquí
         }
     }
 }

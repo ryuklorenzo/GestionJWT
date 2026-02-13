@@ -14,24 +14,21 @@ class DeleteAccountViewModel(private val deleteUserUseCase: DeleteUserUseCase): 
     private val _state = MutableStateFlow(DeleteAccountFormState())
     val state: StateFlow<DeleteAccountFormState> = _state.asStateFlow()
 
-    fun deleteAccount(userId: String) {
+    fun deleteAccount(password: String) {
         viewModelScope.launch {
-            _state.update {
-                it.copy(isLoading = true, errorMessage = null)
-            }
-            val result = deleteUserUseCase(userId)
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
+
+            // Pasamos la contraseña
+            val result = deleteUserUseCase(password)
 
             result.onSuccess {
-                _state.update {
-                    it.copy(isLoading = false, isSuccess = true)
-                }
+                _state.update { it.copy(isLoading = false, isSuccess = true) }
             }.onFailure { error ->
                 _state.update {
                     it.copy(isLoading = false, isSuccess = false, errorMessage = error.message ?: "Error desconocido")
                 }
             }
         }
-
     }
     fun resetState() {
         _state.value = DeleteAccountFormState()
