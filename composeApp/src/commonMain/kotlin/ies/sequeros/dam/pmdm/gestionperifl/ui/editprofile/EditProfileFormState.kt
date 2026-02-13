@@ -1,3 +1,4 @@
+package ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile
 data class EditProfileFormState(
     val username: String = "",
     val email: String = "",

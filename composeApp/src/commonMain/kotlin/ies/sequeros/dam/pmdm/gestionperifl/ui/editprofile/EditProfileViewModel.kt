@@ -43,11 +43,11 @@ class EditProfileViewModel( private val updateUserUseCase: UpdateUserUseCase ) :
 
     private fun validateForm() {
         val s = _state.value
-        val isValid = s.username.isNotBlank() &&
+        val istValid = s.username.isNotBlank() &&
                 s.email.isNotBlank() &&
                 s.usernameError == null &&
                 s.emailError == null
-        _state.update { it.copy(isValid = isValid) }
+        _state.update { it.copy(isValid = istValid) }
     }
 
     fun updateProfile() {
