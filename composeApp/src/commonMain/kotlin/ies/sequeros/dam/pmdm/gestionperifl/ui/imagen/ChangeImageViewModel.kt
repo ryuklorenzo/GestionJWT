@@ -6,31 +6,29 @@ import ies.sequeros.dam.pmdm.gestionperifl.application.usercase.ChangeUserImageU
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ChangeImageViewModel(private val changeUserImageUseCase: ChangeUserImageUseCase) : ViewModel() {
+class ChangeImageViewModel(
+    private val changeUserImageUseCase: ChangeUserImageUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(ChangeImageFormState())
     val state: StateFlow<ChangeImageFormState> = _state.asStateFlow()
 
-    fun changeImage(userId: String, imageUrl: String) {
-
+    fun changeImage(
+        userId: String,
+        imageBytes: ByteArray
+    ) {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            _state.update {
-                it.copy(isLoading = true, errorMessage = null)
-            }
-
-            val result = changeUserImageUseCase.invoke(userId, imageUrl)
+            val result = changeUserImageUseCase(userId, imageBytes)
 
             result.onSuccess {
-                _state.update { it.copy(isLoading = false, isSuccess = false) }
+                _state.update { it.copy(isLoading = false, isSuccess = true) }
+            }.onFailure { e ->
+                _state.update {
+                    it.copy(isLoading = false, errorMessage = e.message)
+                }
             }
-
         }
-
     }
-
-    fun resetState() {
-        _state.value = ChangeImageFormState()
-    }
-
 }
