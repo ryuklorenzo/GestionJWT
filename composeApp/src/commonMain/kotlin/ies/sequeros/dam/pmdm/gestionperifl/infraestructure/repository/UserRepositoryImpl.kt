@@ -43,9 +43,6 @@ class UserRepositoryImpl(
                 contentType(ContentType.Application.Json)
                 setBody(LoginRequest(email, password))
             }
-            // Aquí deberías guardar el token si la respuesta devuelve uno
-            // Ejemplo: val tokens: AuthTokens = response.body()
-            // tokenStorage.saveAccessToken(tokens.accessToken)
             response.status == HttpStatusCode.OK
         } catch (e: Exception) {
             e.printStackTrace()
@@ -68,18 +65,15 @@ class UserRepositoryImpl(
 
     override suspend fun deleteAccount(password: String): Boolean {
         return try {
-            // 1. Obtener el token
             val token = tokenStorage.getAccessToken()
             if (token.isNullOrBlank()) {
                 println("UserRepositoryImpl: No hay token disponible para borrar la cuenta.")
                 return false
             }
 
-            // 2. Hacer la petición con la ruta correcta y autorización
-            // Nota: Usamos la ruta completa que confirmaste que funciona
             val response = client.delete("http://localhost:8080/api/users/me") {
                 contentType(ContentType.Application.Json)
-                bearerAuth(token) // <--- ESTO SOLUCIONA EL 401 UNAUTHORIZED
+                bearerAuth(token)
                 setBody(DeleteCommand(password = password))
             }
 
@@ -96,7 +90,7 @@ class UserRepositoryImpl(
     override suspend fun getProfile(): Result<UserProfileResponse> {
         return try {
             val token = tokenStorage.getAccessToken() ?: return Result.failure(Exception("No token"))
-            val response = client.get("$baseUrl/users/me") { // Asegúrate si es 'users' o 'user' aquí también
+            val response = client.get("$baseUrl/users/me") {
                 bearerAuth(token)
             }
             if (response.status == HttpStatusCode.OK) {
@@ -120,7 +114,9 @@ class UserRepositoryImpl(
                 bearerAuth(token)
                 setBody(ChangePasswordCommand(oldPassword = oldPass, newPassword = newPass))
             }
-            println("UserRepositoryImpl: Delete status code = ${response.status}")
+            if (response.status == HttpStatusCode.Unauthorized) {
+                println("Error 401: La contraseña actual es incorrecta o el token ha expirado.")
+            }
             response.status == HttpStatusCode.NoContent || response.status == HttpStatusCode.OK
         }
         catch (e: Exception) {
