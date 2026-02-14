@@ -19,7 +19,6 @@ data class RegisterResponse(
     val image: String? = null
 )
 
-// CORREGIDO: Recibe UserRepository
 class RegisterUseCase(private val repository: UserRepository) {
 
     suspend operator fun invoke(username: String, email: String, password: String): Boolean {

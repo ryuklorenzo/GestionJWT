@@ -24,7 +24,6 @@ fun RegisterScreen(
     val viewModel = koinViewModel<RegisterFormViewModel>()
     val state by viewModel.state.collectAsState()
 
-    // Efecto: Si el registro es exitoso, navegamos
     LaunchedEffect(state.isRegisterSuccess) {
         if (state.isRegisterSuccess) {
             onRegisterSuccess()

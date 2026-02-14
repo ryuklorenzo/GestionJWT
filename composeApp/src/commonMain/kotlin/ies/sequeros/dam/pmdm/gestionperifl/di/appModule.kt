@@ -9,7 +9,14 @@ import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.SettingsToken
 import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.password.ChangePasswordViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.deleteaccount.DeleteAccountScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.editprofile.EditProfileViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.imagen.ChangeImageViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.profile.ProfileViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -17,7 +24,7 @@ import org.koin.dsl.module
 val appModulo = module {
 
     single {
-        createHttpClient("http://localhost:8080/api/public/refresh")
+        createHttpClient(get(), "http://localhost:8080/api/public/refresh")
     }
 
     single { SettingsTokenStorage(get()) }
@@ -35,9 +42,20 @@ val appModulo = module {
     single { GetProfileUseCase(get()) }
     single { LogoutUseCase(get(), get()) }
     single { UpdateUserUseCase(get()) }
+    single { DeleteUserUseCase(get()) }
+    single { ChangePasswordUseCase(get()) }
+    single { ChangeUserImageUseCase(get()) }
 
     viewModel { AppViewModel(get()) }
     viewModel { LoginFormViewModel(get(), get()) }
-
+    viewModel { EditProfileViewModel(get()) }
+    viewModel { DeleteAccountViewModel(get()) }
+    viewModel { ChangeImageViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
     viewModel { RegisterFormViewModel(get()) }
+    viewModel { ChangePasswordViewModel(get()) }
+    viewModel { DeleteAccountViewModel(get()) }
+    viewModel { EditProfileViewModel(get())}
+
+
 }

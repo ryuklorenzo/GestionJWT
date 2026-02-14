@@ -55,7 +55,6 @@ class RegisterFormViewModel(
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                // CORREGIDO: Llamada REAL al caso de uso
                 val success = registerUseCase(
                     username = currentState.name,
                     email = currentState.email,

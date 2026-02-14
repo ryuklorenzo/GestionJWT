@@ -9,19 +9,16 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChangePasswordRequest(val oldPassword: String, val newPassword: String)
+data class ChangePasswordRequest(val old_password: String, val new_password: String)
 
 class ChangePasswordUseCase(private val client: HttpClient) {
 
-    // CAMBIO 1: Cambiado Result<String> a Result<Unit> porque devuelves Unit al tener éxito
     suspend operator fun invoke(oldPass: String, newPass: String): Result<Unit> {
-        // CAMBIO 2: Añadido 'return' aquí para devolver el resultado del bloque
+
         return try {
-            // Nota: 10.0.2.2 funciona para el Emulador de Android.
-            // Si usas Desktop, deberías usar "localhost".
-            val response = client.put("http://10.0.2.2:8080/api/users/me/password") {
+            val response = client.put("http://localhost:8080/api/users/me/password") {
                 contentType(ContentType.Application.Json)
-                setBody(ChangePasswordRequest(oldPassword = oldPass, newPassword = newPass))
+                setBody(ChangePasswordRequest(old_password = oldPass, new_password = newPass))
             }
 
             when (response.status) {
@@ -29,7 +26,6 @@ class ChangePasswordUseCase(private val client: HttpClient) {
                     Result.success(Unit)
                 }
                 HttpStatusCode.BadRequest -> {
-                    // CAMBIO 3: Corregido 'failture' -> 'failure'
                     Result.failure(Exception("La contraseña antigua no es correcta o la nueva no cumple los requisitos"))
                 }
                 HttpStatusCode.Unauthorized -> {
@@ -44,4 +40,5 @@ class ChangePasswordUseCase(private val client: HttpClient) {
             Result.failure(e)
         }
     }
+
 }

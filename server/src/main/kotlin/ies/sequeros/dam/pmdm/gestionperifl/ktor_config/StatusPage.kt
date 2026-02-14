@@ -19,11 +19,13 @@ import io.ktor.server.plugins.requestvalidation.RequestValidationException
 
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.SerializationException
 import org.hibernate.exception.JDBCConnectionException
 import org.postgresql.util.PSQLException
 import java.net.ConnectException
+import javax.naming.AuthenticationException
 
 fun Application.configureStatusPages() {
     //configuración
@@ -134,17 +136,19 @@ fun Application.configureStatusPages() {
             )
             call.respond(HttpStatusCode.Conflict,error)
         }
-        exception<InvalidCredentialsException>{ call, cause ->
-            val error = ErrorResponse(
-                error = "InvalidCredentialsException",
-                detalles = listOf(
-                    ValidationErrorDetail(
-                        "text",
-                        cause.message.toString()
-                    )
-                )
+        exception<InvalidCredentialsException> { call, cause ->
+            call.respondText(
+                text = cause.message ?: "Credenciales incorrectas",
+                status = HttpStatusCode.Unauthorized
             )
-            call.respond(HttpStatusCode.Conflict,error)
+        }
+        status(HttpStatusCode.Unauthorized) { call, status ->
+            // Si el body ya tiene texto (puesto por la excepción de arriba), no lo sobrescribimos
+            // Si está vacío, es que Ktor (JWT) lo rechazó directamente -> Token malo
+            call.respondText(
+                text = "Sesión expirada o token inválido",
+                status = status
+            )
         }
         exception<NotFoundException>{ call, cause ->
             val error = ErrorResponse(

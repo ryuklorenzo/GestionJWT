@@ -1,9 +1,13 @@
 package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor
+
+import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.storage.TokenStorage
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
 
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -12,17 +16,21 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-fun createHttpClient(//tokenStorage: TokenStorage,
-                     refreshUrl:String): HttpClient {
-    return HttpClient { // Puedes usar HttpClient(CIO), HttpClient(Darwin), etc.
+fun createHttpClient(tokenStorage: TokenStorage,
+                     refreshUrl: String
+): HttpClient {
+    return HttpClient {
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
@@ -35,7 +43,7 @@ fun createHttpClient(//tokenStorage: TokenStorage,
                     println("KTOR CLIENT LOG: $message")
                 }
             }
-            level = LogLevel.ALL // O LogLevel.ALL para ver todo
+            level = LogLevel.ALL
         }
         install(ContentNegotiation) {
             json(Json {
@@ -46,19 +54,36 @@ fun createHttpClient(//tokenStorage: TokenStorage,
         }
         install(Auth) {
             bearer {
-                sendWithoutRequest { request ->
-                    request.url.encodedPath.startsWith("/api/users/")
-                }
                 loadTokens {
-                    // Ktor llama a esto automáticamente en cada petición
-                    //obtener los tokens y si existen añadirlo
-                     //   BearerTokens(accessToken, refreshToken ?: "")
-                    null
+                    BearerTokens(
+                        accessToken = "mi_token_jwt", refreshToken =
+                            ""
+                    )
                 }
-
-                // configurar el refresco
                 refreshTokens {
-                   null
+                    val response =
+                        client.post(refreshUrl) {
+                            markAsRefreshTokenRequest()
+                            //token de refresco
+                            setBody(mapOf("refresh_token" to tokenStorage.getRefreshToken()))
+                        }
+                    if (response.status == HttpStatusCode.OK) {
+                        // Leemos la respuesta directamente como un Mapa
+                        val data = response.body <Map<String, String>>()
+                        // Extraer los valores usando las llaves del JSON
+                        val newAccess = data["access_token"] ?: ""
+                        val newRefresh = data["refresh_token"] ?: "antiguo refresh token" ?: ""
+                        val idToken = data["id_token"]
+                        /// Será null si es OAuth, tendrá valor si es Google
+
+                        if (idToken != null) {
+                            println(
+                                "Se ha recibido identidad (OIDC):$idToken")
+                        }
+                        BearerTokens(newAccess, newRefresh)
+                    } else {
+                        null
+                    }
                 }
             }
         }

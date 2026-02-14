@@ -97,7 +97,7 @@ fun LoginComponent(
             )
         }
 
-        // --- BOTONES ---
+        // Botones
         if (state.isLoading) {
             // Si está cargando, mostramos la rueda
             CircularProgressIndicator()

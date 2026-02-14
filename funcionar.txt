@@ -12,4 +12,3 @@ PRIMERO INICIAR SERVER
 Luego ya iniciar app:
 ./gradlew :composeApp:app
 
-
