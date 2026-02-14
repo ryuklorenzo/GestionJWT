@@ -49,7 +49,6 @@ fun DeleteAccountScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- CAMPO PARA LA CONTRASEÑA ---
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -64,7 +63,6 @@ fun DeleteAccountScreen(
             },
             modifier = Modifier.fillMaxWidth()
         )
-        // --------------------------------
 
         if (state.errorMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))

@@ -49,7 +49,6 @@ class ChangePasswordViewModel(
                     )
                 }
             }.onFailure { error ->
-                // AQUI MOSTRAMOS EL MENSAJE QUE VINO DEL SERVIDOR
                 _state.update {
                     it.copy(
                         isLoading = false,

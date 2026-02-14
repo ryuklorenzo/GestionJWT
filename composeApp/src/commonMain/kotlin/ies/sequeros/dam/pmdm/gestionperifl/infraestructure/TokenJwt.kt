@@ -13,7 +13,7 @@ data class TokenJwtPayload(val claims: Map<String, Any> = emptyMap()){
     @Suppress("UNCHECKED_CAST")
     fun <T> get(key: String): T? = claims[key] as? T
 
-    // Propiedades calculadas para los campos más comunes (opcional)
+    // Propiedades calculadas para los campos más comunes
     val userId: String? get() = get("sub")
     val expiration: Long? get() = (claims["exp"] as? Number)?.toLong()
 }

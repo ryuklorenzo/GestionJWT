@@ -22,7 +22,6 @@ class SessionManager(private val tokenStorage: TokenStorage) {
     fun getIdToken(): String? = tokenStorage.getIdToken()
 
     fun isLoggedIn(): Boolean {
-        //loggeado si hay token
         return tokenStorage.getAccessToken() != null && tokenStorage.getIdToken() != null
     }
 

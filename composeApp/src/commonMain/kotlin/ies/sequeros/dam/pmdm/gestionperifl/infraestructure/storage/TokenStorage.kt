@@ -4,12 +4,12 @@ import ies.sequeros.dam.pmdm.gestionperifl.domain.model.AuthTokens
 
 interface TokenStorage {
 
-    // Métodos individuales (opcionales, pero útiles)
+    // Métodos individuales
     fun saveAccessToken(token: String)
     fun saveRefreshToken(token: String?)
     fun saveIdToken(token: String?)
 
-    // Métodos para guardar/recuperar todo el bloque
+    // Métodos para guardar/recuperar
     fun saveAllTokens(tokens: AuthTokens)
 
     // Métodos de recuperación

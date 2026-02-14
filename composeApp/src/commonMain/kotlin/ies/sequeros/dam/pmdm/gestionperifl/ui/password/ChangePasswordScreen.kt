@@ -20,7 +20,7 @@ fun ChangePasswordScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // Estados locales para controlar la visibilidad de las contraseñas (el ojo)
+    // Estados locales para controlar la visibilidad de las contraseñas
     var oldPasswordVisible by remember { mutableStateOf(false) }
     var newPasswordVisible by remember { mutableStateOf(false) }
 
@@ -36,7 +36,6 @@ fun ChangePasswordScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- CAMPO CONTRASEÑA ANTIGUA ---
         OutlinedTextField(
             value = state.oldPassword,
             onValueChange = { viewModel.onOldPasswordChange(it) },
@@ -56,7 +55,6 @@ fun ChangePasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // --- CAMPO NUEVA CONTRASEÑA ---
         OutlinedTextField(
             value = state.newPassword,
             onValueChange = { viewModel.onNewPasswordChange(it) },
@@ -109,7 +107,6 @@ fun ChangePasswordScreen(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge
             )
-            // Opcional: Podrías llamar a una función para navegar atrás o cerrar sesión aquí
         }
     }
 }

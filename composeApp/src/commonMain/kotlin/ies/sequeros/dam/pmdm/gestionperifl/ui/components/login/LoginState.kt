@@ -9,10 +9,10 @@ data class LoginState(
     val isLoading: Boolean = false,
     val isLoginSuccess: Boolean = false,
     val isValid:Boolean = false,
-    // Errores específicos de campo (validación local)
+    // Errores específicos de campo
     val emailError: String? = null,
     val passwordError: String? = null,
 
-    // Error global (ej: "Credenciales incorrectas" o "No hay internet")
+    // Error global
     val errorMessage: String? = null
 )
