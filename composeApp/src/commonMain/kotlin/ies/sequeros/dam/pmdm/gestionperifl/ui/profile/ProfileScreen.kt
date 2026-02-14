@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 @Composable
 fun ProfileScreen(
@@ -42,6 +43,16 @@ fun ProfileScreen(
             }
 
             else -> {
+                AsyncImage(
+                    model = state.image,
+                    contentDescription = "Imagen de perfil",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
                 ProfileItem("Usuario:", state.name)
                 Spacer(modifier = Modifier.height(20.dp))
                 ProfileItem("Email:", state.email)
