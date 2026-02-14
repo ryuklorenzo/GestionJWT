@@ -46,7 +46,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 ProfileItem("Email:", state.email)
                 Spacer(modifier = Modifier.height(20.dp))
-                ProfileItem("Imagenes:", state.image)
+                ProfileItem("Imagenes:", state.image, isImage = true)
                 Spacer(modifier = Modifier.height(20.dp))
                 ProfileItem("Estado de la cuenta:", state.status)
             }

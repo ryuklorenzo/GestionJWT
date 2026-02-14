@@ -104,7 +104,6 @@ kotlin {
 
             //almacenamiento token seguro
             implementation("com.russhwolf:multiplatform-settings:1.3.0")
-
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
