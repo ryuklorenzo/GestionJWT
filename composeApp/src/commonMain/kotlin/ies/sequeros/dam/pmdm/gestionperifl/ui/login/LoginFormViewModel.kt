@@ -63,7 +63,6 @@ class LoginFormViewModel(
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                // 2. Llamada al caso de uso pasando el estado actual
                 val result = loginUseCase(_state.value)
 
                 result.onSuccess { response ->

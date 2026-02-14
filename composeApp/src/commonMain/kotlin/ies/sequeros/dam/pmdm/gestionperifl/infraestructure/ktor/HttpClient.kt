@@ -30,7 +30,7 @@ import kotlinx.serialization.json.Json
 fun createHttpClient(tokenStorage: TokenStorage,
                      refreshUrl: String
 ): HttpClient {
-    return HttpClient { // Puedes usar HttpClient(CIO), HttpClient(Darwin), etc.
+    return HttpClient {
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
@@ -43,7 +43,7 @@ fun createHttpClient(tokenStorage: TokenStorage,
                     println("KTOR CLIENT LOG: $message")
                 }
             }
-            level = LogLevel.ALL // O LogLevel.ALL para ver todo
+            level = LogLevel.ALL
         }
         install(ContentNegotiation) {
             json(Json {
@@ -61,8 +61,6 @@ fun createHttpClient(tokenStorage: TokenStorage,
                     )
                 }
                 refreshTokens {
-                    // Enviamos la petición de refresco como un mapa (JSON)
-                    //end point de refresco
                     val response =
                         client.post(refreshUrl) {
                             markAsRefreshTokenRequest()
@@ -77,10 +75,7 @@ fun createHttpClient(tokenStorage: TokenStorage,
                         val newRefresh = data["refresh_token"] ?: "antiguo refresh token" ?: ""
                         val idToken = data["id_token"]
                         /// Será null si es OAuth, tendrá valor si es Google
-                        // actualizra el almacen de tokens
-                        // .
-                        // Opcional: Si existe id_token, aquí se podriña
-                        //actualizar el perfilil
+
                         if (idToken != null) {
                             println(
                                 "Se ha recibido identidad (OIDC):$idToken")
