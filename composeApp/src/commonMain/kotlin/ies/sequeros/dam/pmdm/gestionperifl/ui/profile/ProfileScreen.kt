@@ -43,21 +43,18 @@ fun ProfileScreen(
             }
 
             else -> {
-                AsyncImage(
-                    model = state.image,
-                    contentDescription = "Imagen de perfil",
-                    modifier = Modifier
-                        .size(120.dp)
-                        .padding(8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
                 ProfileItem("Usuario:", state.name)
                 Spacer(modifier = Modifier.height(20.dp))
                 ProfileItem("Email:", state.email)
                 Spacer(modifier = Modifier.height(20.dp))
-                ProfileItem("Imagenes:", state.image, isImage = true)
+                Text("Imagen de perfil:")
+                AsyncImage(
+                    model = state.image,
+                    contentDescription = "Imagen de perfil",
+                    modifier = Modifier
+                        .size(160.dp)
+                        .padding(1.dp)
+                )
                 Spacer(modifier = Modifier.height(20.dp))
                 ProfileItem("Estado de la cuenta:", state.status)
             }

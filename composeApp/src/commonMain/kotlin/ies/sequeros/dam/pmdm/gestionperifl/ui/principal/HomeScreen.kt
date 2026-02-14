@@ -140,7 +140,7 @@ fun HomeScreen(onLogout: () -> Unit) {
                     composable<PasswordRoute> {
                         ChangePasswordScreen(
                             changepasswordviewmodel,
-                            { onLogout() }
+                            onPasswordChange = {onLogout()}
                         )
                     }
                     composable<ImageRoute> {

@@ -10,7 +10,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import ies.sequeros.dam.pmdm.gestionperifl.SERVER_PORT
 
 @Composable
 fun ProfileItem(label: String, value: String, isImage: Boolean = false) {
@@ -27,6 +26,7 @@ fun ProfileItem(label: String, value: String, isImage: Boolean = false) {
                 model = imageUrl,
                 contentDescription = "Imagen de usuario",
                 modifier = Modifier
+                    .padding(top=4.dp)
                     .size(100.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
