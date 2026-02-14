@@ -34,7 +34,7 @@ fun LoginScreen(
             onRegister()
         },
         onCancel = {
-            onCancel()
+            viewModel.clearFields()
         }
     )
 }

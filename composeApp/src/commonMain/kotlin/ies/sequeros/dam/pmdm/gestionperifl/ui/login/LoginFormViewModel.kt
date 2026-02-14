@@ -106,5 +106,15 @@ class LoginFormViewModel(
                 }
             }
         }
+
+    }
+    fun clearFields() {
+        _state.update {
+            it.copy(
+                email = "",
+                password = "",
+                errorMessage = null
+            )
+        }
     }
 }
